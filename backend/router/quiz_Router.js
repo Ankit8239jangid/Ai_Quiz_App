@@ -5,7 +5,7 @@ import validateQuiz from "../middleware/quiz.auth.js";
 export const quizRoute = express.Router();
 
 quizRoute.post("/create_quiz", validateQuiz, async (req, res) => {
-    try {
+    try {     
         const { title, timeLimit, numQuestions, questions, field } = req.body;
 
         // Validate that numQuestions matches actual questions length
