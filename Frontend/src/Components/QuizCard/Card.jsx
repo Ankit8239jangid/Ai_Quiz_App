@@ -1,14 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-function QuizCard({ hading, Field, Questions, Time, link }) {
+function QuizCard({ heading, Field, Questions, Time, link }) {
     const navigate = useNavigate()
     return (
 
-        <div className=" h-56 md:w-72 w-80 m-5 border border-gray-100    rounded-2xl shadow-md shadow-neutral-500 overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+        <div className=" h-56 w-auto m-5 border border-gray-100    rounded-2xl shadow-md shadow-neutral-500 overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
             {/* Header */}
             <div className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-4 relative">
                 <h2 className="text-xl font-semibold text-white leading-tight">
-                    {hading}
+                    {heading}
                 </h2>
                 <div className="absolute -bottom-2 right-2 w-8 h-8 bg-white/20 rounded-full" />
             </div>
