@@ -4,7 +4,7 @@ dotenv.config();
 
 function DataBase() {
     mongoose.connect(process.env.MONGO_URI)// apna database ko connect karo 
-    
+
         .then(() => console.log("Database connected"))
         .catch(err => console.error("Database connection error:", err));
 }
@@ -32,18 +32,5 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-const accountSchema = new mongoose.Schema({
-    userId: {  // Changed from userid to userId
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    balance: {
-        type: Number,
-        required: true
-    }
-});
-
-export const Account = mongoose.model('Account', accountSchema);
 export const User = mongoose.model('User', userSchema);
 

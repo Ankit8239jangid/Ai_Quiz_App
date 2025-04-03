@@ -11,6 +11,7 @@ export default function App() {
           {/* Using 'index' instead of redundant '/' to make Home the default page inside Layout */}
           <Route index element={<Home />} />
         </Route>
+        <Route path="quiz/:id" element={<h1>404 Not Found</h1>} />
       </Routes>
     </BrowserRouter>
   );

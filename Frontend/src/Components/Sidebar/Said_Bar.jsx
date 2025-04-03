@@ -28,12 +28,12 @@ function SideBar() {
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
     return (
-        <div className="h-screen">
+        <div className="h-screen border-r-gray-100 shadow-md shadow-white">
             {/* Toggle button */}
             <button
                 onClick={toggleSidebar}
                 type="button"
-                className="fixed top-2 right-2 z-50 p-2 text-white bg-black rounded-lg sm:hidden"
+                className="fixed top-2 right-2 z-50 p-2  bg-black rounded-lg sm:hidden"
             >
                 <span className="sr-only">Toggle sidebar</span>
                 {isSidebarOpen ? <FaTimes className="w-6 h-6" /> : <FaBars className="w-6 h-6" />}
@@ -41,7 +41,7 @@ function SideBar() {
 
             {/* Sidebar */}
             <aside
-                className={`fixed md:static top-0 left-0 z-40 md:z-0 w-64 h-screen transition-transform duration-300 bg-black 
+                className={`fixed md:static top-0 left-0 z-40 md:z-0 w-64 h-screen transition-transform duration-300
                     ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} sm:translate-x-0`}
                 aria-label="Sidebar"
             >
@@ -53,10 +53,10 @@ function SideBar() {
                                 className="h-8 me-3 hover:scale-110 transition-transform"
                                 alt="Logo"
                             />
-                            <span className="text-xl font-semibold text-white">Quizzz</span>
+                            <span className="text-xl font-semibold ">Quizzz</span>
                         </NavLink>
                         <button
-                            className="flex items-center justify-center h-7 w-7 text-sm text-white bg-purple-500 rounded-full hover:bg-purple-600"
+                            className="flex items-center justify-center h-7 w-7 text-sm  bg-purple-500 rounded-full hover:bg-purple-600"
                         >
                             A
                         </button>
@@ -69,7 +69,7 @@ function SideBar() {
                             <li key={index}>
                                 <NavLink
                                     to={item.to}
-                                    className="flex items-center p-2 text-white rounded-lg hover:bg-gray-800"
+                                    className="flex items-center p-2  rounded-lg hover:bg-gray-300"
                                     onClick={() => setIsSidebarOpen(false)}
                                 >
                                     <span className="w-5 h-5">{item.icon}</span>

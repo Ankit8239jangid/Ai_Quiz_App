@@ -1,4 +1,5 @@
 import express from "express";
-export const router = express.Router();
+import { quizRoute } from "./quiz_Router.js";
 
+export const router = express.Router();
 router.use('/quiz', quizRoute);
