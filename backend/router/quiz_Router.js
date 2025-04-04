@@ -39,7 +39,7 @@ quizRoute.post("/create_quiz", validateQuiz, async (req, res) => {
 });
 
 // Add a GET route to fetch quizzes
-quizRoute.get("/", async (req, res) => {
+quizRoute.get("/all_quiz", async (req, res) => {
     try {
         const quizzes = await Quiz.find({}).select('-questions.correctAnswer');
         res.status(200).json({
@@ -50,6 +50,32 @@ quizRoute.get("/", async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Failed to fetch quizzes",
+            error: error.message
+        });
+    }
+});
+
+
+
+//Add a get route to fetch a quiz by ID or name 
+quizRoute.get("/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+        const quiz = await Quiz.findById(id).select('-questions.correctAnswer');
+        if (!quiz) {
+            return res.status(404).json({
+                success: false,
+                message: "Quiz not found"
+            });
+        }
+        res.status(200).json({
+            success: true,
+            quiz
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch quiz",
             error: error.message
         });
     }

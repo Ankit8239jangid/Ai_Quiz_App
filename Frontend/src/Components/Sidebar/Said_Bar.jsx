@@ -20,7 +20,7 @@ function SideBar() {
     // Sidebar items
     const sidebarItems = [
         { icon: <TbLayoutDashboardFilled />, label: 'Dashboard', to: '/Dashboard' },
-        { icon: <FaTh />, label: 'Kanban', to: '/kanban', badge: { text: 'Pro', color: 'bg-gray-100 text-gray-800' } },
+        { icon: <FaTh />, label: 'Quizes', to: '/quizes', badge: { text: 'Pro', color: 'bg-gray-100 text-gray-800' } },
         { icon: <FaEnvelope />, label: 'Inbox', to: '/inbox', badge: { text: '3', color: 'bg-blue-100 text-blue-800' } },
         { icon: <FaUsers />, label: 'Users', to: '/users' },
         { icon: <FaShoppingBag />, label: 'Products', to: '/products' },
