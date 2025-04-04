@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import axios from 'axios';
 import { useAppContext } from '../../context/app.context';
+import { useEffect } from 'react';
 
 function QuizTest() {
     const [searchParams] = useSearchParams();
@@ -9,31 +8,17 @@ function QuizTest() {
     // Extract ID and Name from params
     const id = searchParams.get('id');
     const name = searchParams.get('name');
-    const { Selectquizze, setSelectQuizze, isLoading, setIsLoading } = useAppContext();
-    // Local state for loading & quiz data
-    // const [quiz, setQuiz] = useState(null);
-    // const [isLoading, setIsLoading] = useState(false); // ✅ FIXED: Using local state
+    const { Selectquizze, isLoading, FetchApi } = useAppContext();
 
     useEffect(() => {
-        if (!id) return; // Prevent API call if `id` is null
-
-        (async () => {
-            try {
-                setIsLoading(true); // ✅ No longer using context
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/${id}`);
-
-                setSelectQuizze(response.data.quiz); // ✅ Correctly set quiz data
-            } catch (error) {
-                console.error("Error fetching quiz:", error);
-                setSelectQuizze(null);
-            } finally {
-                setIsLoading(false); // ✅ Works correctly now
-            }
-        })();
-    }, [id]);
+        if (id) {
+            FetchApi(id); // Fetch quiz details using the ID
+        }
+    }, [])  //this Is an iffy function that takes a input of ID
 
     return (
-        <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white">
+        <div className="h-screen flex flex-col overflow-auto items-center text-white">
+
             <p className="text-lg">Name: {name}</p>
 
             {isLoading ? (

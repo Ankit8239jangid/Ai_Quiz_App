@@ -44,8 +44,9 @@ function Home() {
                             />
                         ))
                     ) : (
-                        <div className="flex justify-center w-full mt-10">
-                            <img src={NotFound} alt="No quizzes found" className="h-64" />
+                        <div className="flex flex-col items-center justify-center w-full mt-20 translate-x-80">
+                            <img src={NotFound} alt="No quizzes found" className="" />
+
                         </div>
                     )}
                 </div>

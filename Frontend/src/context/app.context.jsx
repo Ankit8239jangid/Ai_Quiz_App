@@ -33,6 +33,23 @@ export const AppProvider = ({ children }) => {
 
     // Fetch a single quiz by ID
 
+    const FetchApi = (id) => {
+        (async () => {
+            try {
+                setIsLoading(true); // ✅ No longer using context
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/${id}`);
+
+                setSelectQuizze(response.data.quiz); // ✅ Correctly set quiz data
+            } catch (error) {
+                console.error("Error fetching quiz:", error);
+                setSelectQuizze(null);
+            } finally {
+                setIsLoading(false); // ✅ Works correctly now
+            }
+        })();
+    }
+
+
 
     // Values to be shared across components
     const value = {
@@ -49,7 +66,7 @@ export const AppProvider = ({ children }) => {
         setScore,
         userAnswers,
         setUserAnswers,
-        // getoneQuiz,
+        FetchApi,
         Selectquizze,
         setSelectQuizze,
         setIsLoading,
