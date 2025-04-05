@@ -10,12 +10,14 @@ import {
     FaSignInAlt,
     FaUserPlus,
     FaBars,
-    FaTimes
+    FaTimes,
+    FaSun,
+    FaMoon
 } from 'react-icons/fa';
 import { useAppContext } from '../../context/app.context';
 
 function SideBar() {
-    const { isSidebarOpen, setIsSidebarOpen } = useAppContext();
+    const { isSidebarOpen, setIsSidebarOpen, theme, toggleTheme } = useAppContext();
 
     // Sidebar items
     const sidebarItems = [
@@ -31,12 +33,12 @@ function SideBar() {
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
     return (
-        <div className="h-screen border-r-gray-100 shadow-md shadow-white">
+        <div className={`h-screen border-r border-gray-700 dark:border-gray-600 shadow-md ${theme === 'dark' ? 'shadow-gray-700' : 'shadow-white'}`}>
             {/* Toggle button - visible only on mobile */}
             <button
                 onClick={toggleSidebar}
                 type="button"
-                className="fixed top-2 right-2 z-50 p-2 bg-black rounded-lg md:hidden"
+                className={`fixed top-2 right-2 z-50 p-2 ${theme === 'dark' ? 'bg-gray-800' : 'bg-black'} rounded-lg md:hidden`}
             >
                 <span className="sr-only">Toggle sidebar</span>
                 {isSidebarOpen ? <FaTimes className="w-6 h-6" /> : <FaBars className="w-6 h-6" />}
@@ -45,24 +47,28 @@ function SideBar() {
             {/* Sidebar */}
             <aside
                 className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform duration-300
-                    ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
-                    md:translate-x-0 md:static`}
+                    ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+                    md:translate-x-0 md:static dark:bg-gray-900 bg-gray-100`}
                 aria-label="Sidebar"
             >
                 <div className="px-4 pt-5">
                     <div className="flex items-center justify-between">
-                        <NavLink to="/" className="flex items-center">
+                        <NavLink to="/" className="flex items-center gap-2">
                             <img
                                 src={logo}
                                 className="h-12 hover:scale-110 transition-transform"
                                 alt="Logo"
                             />
-                            <span className="text-xl font-semibold">Quizzz</span>
+                            <span className="text-xl font-semibold dark:text-white text-gray-800">Quizzz</span>
                         </NavLink>
+
+                        {/* Theme Toggle Button */}
                         <button
-                            className="flex items-center justify-center h-7 w-7 text-sm bg-purple-500 rounded-full hover:bg-purple-600"
+                            onClick={toggleTheme}
+                            className={`flex items-center justify-center h-9 w-9 text-sm rounded-full transition-all duration-300 ${theme === 'dark' ? 'bg-gray-700 text-yellow-300 hover:bg-gray-600' : 'bg-indigo-100 text-indigo-600 hover:bg-indigo-200'}`}
+                            aria-label="Toggle theme"
                         >
-                            A
+                            {theme === 'dark' ? <FaSun className="w-5 h-5" /> : <FaMoon className="w-4 h-4" />}
                         </button>
                     </div>
                 </div>
@@ -75,12 +81,14 @@ function SideBar() {
                                     to={item.to}
                                     className={({ isActive }) =>
                                         `flex items-center p-2 rounded-lg transition-all duration-300 ease-in-out
-         hover:border hover:border-gray-300 hover:scale-105 
-        hover:shadow-md group ${isActive ? ' shadow-md border border-gray-300 ' : ''}`
+                                        dark:text-white text-gray-800
+                                        hover:border ${theme === 'dark' ? 'hover:border-gray-600' : 'hover:border-gray-300'} hover:scale-105
+                                        hover:shadow-md group ${isActive ?
+                                            `shadow-md border ${theme === 'dark' ? 'border-gray-600 bg-gray-800' : 'border-gray-300 bg-white'}` : ''}`
                                     }
                                     onClick={() => setIsSidebarOpen(false)}
                                 >
-                                    <span className="w-5 h-5 transition-transform duration-300 group-hover:rotate-12">
+                                    <span className={`w-5 h-5 transition-transform duration-300 group-hover:rotate-12 ${theme === 'dark' ? 'text-primary-dark' : 'text-primary-light'}`}>
                                         {item.icon}
                                     </span>
                                     <span className="flex-1 ms-3 transition-opacity duration-300 group-hover:opacity-90">
@@ -88,8 +96,10 @@ function SideBar() {
                                     </span>
                                     {item.badge && (
                                         <span
-                                            className={`px-2 ms-3 text-sm font-medium rounded-full transition-transform duration-300 
-            group-hover:scale-110 ${item.badge.color}`}
+                                            className={`px-2 ms-3 text-sm font-medium rounded-full transition-transform duration-300
+                                            group-hover:scale-110 ${theme === 'dark' ?
+                                                (item.badge.color.includes('blue') ? 'bg-blue-900 text-blue-200' : 'bg-gray-700 text-gray-200') :
+                                                item.badge.color}`}
                                         >
                                             {item.badge.text}
                                         </span>
@@ -104,7 +114,7 @@ function SideBar() {
             {/* Overlay for mobile when sidebar is open */}
             {isSidebarOpen && (
                 <div
-                    className="fixed inset-0 bg-black bg-opacity-100 z-30 md:hidden"
+                    className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-30 md:hidden"
                     onClick={toggleSidebar}
                 />
             )}

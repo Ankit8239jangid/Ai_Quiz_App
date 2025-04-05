@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import { useAppContext } from '../../context/app.context';
-import { FaSearch, FaTimes } from 'react-icons/fa';
+import { FaSearch, FaTimes, FaFilter } from 'react-icons/fa';
 
 function QuizFilter() {
-    const { quizzes = [], search = '', setSearch, selectedField = 'All', setSelectedField } = useAppContext();
+    const { quizzes = [], search = '', setSearch, selectedField = 'All', setSelectedField, theme } = useAppContext();
 
     // Memoize unique fields to avoid recomputing on every render
     const fields = useMemo(() => {
@@ -17,7 +17,7 @@ function QuizFilter() {
     };
 
     return (
-        <div className="w-full max-w-3xl mx-auto px-4 pb-6">
+        <div className=" w-full max-w-3xl mx-auto px-4 pb-4">
             <div className="flex flex-col sm:flex-row gap-4">
                 {/* Search Input */}
                 <div className="relative flex-1">
@@ -34,10 +34,12 @@ function QuizFilter() {
                             placeholder="Search quizzes..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="w-full pl-12 pr-10 py-3 border border-gray-200 rounded-xl 
-                            focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 
-                            transition-all duration-300 ease-in-out hover:border-indigo-300 
-                            bg-white shadow-sm text-black placeholder-gray-400 text-sm"
+                            className={` w-full pl-12 pr-10 py-3 rounded-xl
+                            focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
+                            transition-all duration-300 ease-in-out
+                            shadow-sm text-sm ${theme === 'dark' ?
+                                'bg-gray-800 border border-gray-700 text-white placeholder-gray-400 hover:border-gray-600' :
+                                'bg-white border border-gray-200 text-gray-800 placeholder-gray-400 hover:border-indigo-300'}`}
                             aria-label="Search quizzes"
                         />
                         {search && (
@@ -46,7 +48,7 @@ function QuizFilter() {
                                 className="absolute inset-y-0 right-0 flex items-center pr-4"
                                 aria-label="Clear search"
                             >
-                                <FaTimes className="h-5 w-5 text-gray-500 hover:text-indigo-600 transition-colors duration-200" />
+                                <FaTimes className={`h-5 w-5 transition-colors duration-200 ${theme === 'dark' ? 'text-gray-400 hover:text-gray-200' : 'text-gray-500 hover:text-indigo-600'}`} />
                             </button>
                         )}
                     </div>
@@ -61,10 +63,12 @@ function QuizFilter() {
                         id="quiz-field"
                         value={selectedField}
                         onChange={(e) => setSelectedField(e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-400 rounded-xl 
-                        focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 
-                        transition-all duration-300 ease-in-out hover:border-indigo-300 
-                        appearance-none bg-white shadow-sm text-black text-sm cursor-pointer"
+                        className={`w-full px-4 py-3 rounded-xl
+                        focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
+                        transition-all duration-300 ease-in-out
+                        appearance-none shadow-sm text-sm cursor-pointer ${theme === 'dark' ?
+                            'bg-gray-800 border border-gray-700 text-white hover:border-gray-600' :
+                            'bg-white border border-gray-300 text-gray-800 hover:border-indigo-300'}`}
                         aria-label="Filter by field"
                     >
                         {fields.map(field => (
@@ -75,15 +79,7 @@ function QuizFilter() {
                     </select>
                     {/* Custom dropdown arrow */}
                     <span className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                        <svg
-                            className="w-4 h-4 text-gray-500"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                        </svg>
+                        <FaFilter className={`w-4 h-4 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
                     </span>
                 </div>
             </div>

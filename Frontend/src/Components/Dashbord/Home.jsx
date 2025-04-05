@@ -1,4 +1,5 @@
 import { useAppContext } from '../../context/app.context';
+import { FaLightbulb } from 'react-icons/fa';
 import QuizCard from '../QuizCard/Card';
 import QuizFilter from './QuizFilter';
 import ShimmerCard from '../../Layout/shimmerCardeUI';
@@ -6,7 +7,7 @@ import logo from '/logo.png';
 import NotFound from '/NotFound.svg';
 
 function Home() {
-    const { quizzes, search, selectedField, isLoading } = useAppContext();
+    const { quizzes, search, selectedField, isLoading, theme } = useAppContext();
 
     // Filter quizzes based on search and field
     const filteredQuizzes = quizzes.filter(quiz => {
@@ -16,10 +17,11 @@ function Home() {
     });
 
     return (
-        <div className="max-h-screen w-full overflow-auto flex flex-col items-center">
-            <div className="flex items-center justify-center text-2xl md:text-3xl font-semibold pt-4 px-4 text-center">
-                <span>Find Your Quiz</span>
-                <img src={logo} alt="" className="h-16" />
+        <div className={`h-screen w-full  flex flex-col items-center ${theme === 'dark' ? 'bg-background-dark' : 'bg-background-light'}`}>
+            <div className="flex items-center justify-center gap-3 text-2xl md:text-3xl font-semibold  px-4 text-center">
+                <span className={theme === 'dark' ? 'text-white' : 'text-gray-800'}>Find Your Quiz</span>
+                <img src={logo} alt="Quiz Logo" className="h-16 hover:scale-110 transition-transform duration-300" />
+                <FaLightbulb className={`text-xl ${theme === 'dark' ? 'text-yellow-300' : 'text-yellow-500'}`} />
             </div>
 
             {/* Search Filter Component */}
@@ -44,9 +46,11 @@ function Home() {
                             />
                         ))
                     ) : (
-                        <div className="flex flex-col items-center justify-center w-full mt-20 translate-x-80">
-                            <img src={NotFound} alt="No quizzes found" className="" />
-
+                        <div className="flex flex-col items-center justify-center col-span-full mt-20">
+                            <img src={NotFound} alt="No quizzes found" className="max-w-md w-full" />
+                            <p className={`text-lg mt-4 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                                No quizzes match your search criteria
+                            </p>
                         </div>
                     )}
                 </div>

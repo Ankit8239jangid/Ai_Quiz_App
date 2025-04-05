@@ -2,30 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Base styles and theme transition */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  /* border: none; */
   outline: none;
 }
 
-  /* Custom Scrollbar */
-  ::-webkit-scrollbar {
-    width: 5px;
-    height: 2px;
-  }
-  
-  ::-webkit-scrollbar-track {
-    background: #000000;
-    border-radius: 10px;
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    background: #fffbfb;
-    border-radius: 10px;
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background: #4b5563;
-  }
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Custom Scrollbar - Theme Aware */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-200 dark:bg-gray-800;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-400 dark:bg-gray-600;
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-500 dark:bg-gray-500;
+}
+
+/* Card and UI element transitions */
+.card, button, a, input, select {
+  transition: all 0.3s ease;
+}

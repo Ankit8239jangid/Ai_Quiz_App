@@ -16,6 +16,32 @@ export const AppProvider = ({ children }) => {
     const [score, setScore] = useState(0);
     const [userAnswers, setUserAnswers] = useState([]);
 
+    // Theme state management
+    const [theme, setTheme] = useState(() => {
+        // Check if theme preference exists in localStorage
+        const savedTheme = localStorage.getItem('theme');
+        return savedTheme || 'light'; // Default to light mode if no preference
+    });
+
+    // Effect to apply theme class to document and save preference
+    useEffect(() => {
+        // Save theme preference to localStorage
+        localStorage.setItem('theme', theme);
+
+        // Apply theme class to document element
+        const root = document.documentElement;
+        if (theme === 'dark') {
+            root.classList.add('dark');
+        } else {
+            root.classList.remove('dark');
+        }
+    }, [theme]);
+
+    // Toggle theme function
+    const toggleTheme = () => {
+        setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
+    };
+
     // Fetch all quizzes from the backend
     useEffect(() => {
         (async () => {
@@ -70,6 +96,9 @@ export const AppProvider = ({ children }) => {
         Selectquizze,
         setSelectQuizze,
         setIsLoading,
+        // Theme related values
+        theme,
+        toggleTheme,
     };
 
     return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
