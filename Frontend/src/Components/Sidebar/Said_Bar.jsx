@@ -4,31 +4,41 @@ import logo from '/logo.png';
 import { TbLayoutDashboardFilled } from "react-icons/tb";
 import {
     FaTh,
-    FaEnvelope,
-    FaUsers,
-    FaShoppingBag,
+    FaPlus,
     FaSignInAlt,
     FaUserPlus,
     FaBars,
     FaTimes,
     FaSun,
-    FaMoon
+    FaMoon,
+    FaSignOutAlt,
+    FaUser
 } from 'react-icons/fa';
 import { useAppContext } from '../../context/app.context';
+import { useAuth } from '../../context/auth.context';
 
 function SideBar() {
     const { isSidebarOpen, setIsSidebarOpen, theme, toggleTheme } = useAppContext();
+    const { currentUser, isAuthenticated, logout } = useAuth();
 
-    // Sidebar items
-    const sidebarItems = [
-        { icon: <TbLayoutDashboardFilled />, label: 'Dashboard', to: '/Dashboard' },
-        { icon: <FaTh />, label: 'Quizes', to: '/quizes', badge: { text: 'Pro', color: 'bg-gray-100 text-gray-800' } },
-        { icon: <FaEnvelope />, label: 'Inbox', to: '/inbox', badge: { text: '3', color: 'bg-blue-100 text-blue-800' } },
-        { icon: <FaUsers />, label: 'Users', to: '/users' },
-        { icon: <FaShoppingBag />, label: 'Products', to: '/products' },
-        { icon: <FaSignInAlt />, label: 'Sign In', to: '/signin' },
-        { icon: <FaUserPlus />, label: 'Sign Up', to: '/signup' },
-    ];
+    // Handle logout
+    const handleLogout = () => {
+        logout();
+        window.location.href = '/login';
+    };
+
+    // Sidebar items based on authentication status
+  
+  // Items for authenticated users
+        const sidebarItems = [
+            { icon: <TbLayoutDashboardFilled />, label: 'Dashboard', to: '/dashboard' },
+            { icon: <FaTh />, label: 'Browse Quizzes', to: '/quizes' },
+            { icon: <FaPlus />, label: 'Create Quiz', to: '/create-quiz' },
+            { icon: <FaUser />, label: 'Profile', to: '/profile' },
+        ];
+
+        isAuthenticated() && [...sidebarItems];
+
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
@@ -62,14 +72,27 @@ function SideBar() {
                             <span className="text-xl font-semibold dark:text-white text-gray-800">Quizzz</span>
                         </NavLink>
 
-                        {/* Theme Toggle Button */}
-                        <button
-                            onClick={toggleTheme}
-                            className={`flex items-center justify-center h-9 w-9 text-sm rounded-full transition-all duration-300 ${theme === 'dark' ? 'bg-gray-700 text-yellow-300 hover:bg-gray-600' : 'bg-indigo-100 text-indigo-600 hover:bg-indigo-200'}`}
-                            aria-label="Toggle theme"
-                        >
-                            {theme === 'dark' ? <FaSun className="w-5 h-5" /> : <FaMoon className="w-4 h-4" />}
-                        </button>
+                        <div className="flex items-center space-x-2">
+                            {/* Theme Toggle Button */}
+                            <button
+                                onClick={toggleTheme}
+                                className={`flex items-center justify-center h-9 w-9 text-sm rounded-full transition-all duration-300 ${theme === 'dark' ? 'bg-gray-700 text-yellow-300 hover:bg-gray-600' : 'bg-indigo-100 text-indigo-600 hover:bg-indigo-200'}`}
+                                aria-label="Toggle theme"
+                            >
+                                {theme === 'dark' ? <FaSun className="w-5 h-5" /> : <FaMoon className="w-4 h-4" />}
+                            </button>
+
+                            {/* Logout Button (only shown when authenticated) */}
+                            {isAuthenticated() && (
+                                <button
+                                    onClick={handleLogout}
+                                    className={`flex items-center justify-center h-9 w-9 text-sm rounded-full transition-all duration-300 ${theme === 'dark' ? 'bg-red-900 text-red-200 hover:bg-red-800' : 'bg-red-100 text-red-600 hover:bg-red-200'}`}
+                                    aria-label="Logout"
+                                >
+                                    <FaSignOutAlt className="w-4 h-4" />
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
 
@@ -98,8 +121,8 @@ function SideBar() {
                                         <span
                                             className={`px-2 ms-3 text-sm font-medium rounded-full transition-transform duration-300
                                             group-hover:scale-110 ${theme === 'dark' ?
-                                                (item.badge.color.includes('blue') ? 'bg-blue-900 text-blue-200' : 'bg-gray-700 text-gray-200') :
-                                                item.badge.color}`}
+                                                    (item.badge.color.includes('blue') ? 'bg-blue-900 text-blue-200' : 'bg-gray-700 text-gray-200') :
+                                                    item.badge.color}`}
                                         >
                                             {item.badge.text}
                                         </span>

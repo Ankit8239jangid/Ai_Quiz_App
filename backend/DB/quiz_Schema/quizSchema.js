@@ -10,6 +10,7 @@ const quizSchema = new mongoose.Schema({
         options: [{ type: String, required: true }],
         correctAnswer: { type: String, required: true },
     }],  // Embed questions directly
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     createdAt: { type: Date, default: Date.now },
 });
 

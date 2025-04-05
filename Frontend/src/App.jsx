@@ -1,25 +1,80 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import Layout from './Layout/Layout';
 import Home from './Components/Dashbord/Home';
-
+import Dashboard from './Components/Dashboard/Dashboard';
+import QuizForm from './Components/Quiz/QuizForm';
 import QuizTest from './Components/QuizTestPage/QuizTest';
+import Login from './Components/Auth/Login';
+import Signup from './Components/Auth/Signup';
+import Profile from './Components/Profile/Profile';
+import { useAuth } from './context/auth.context';
 import errorImage from '/404error.svg'; // Ensure correct image path
+
+// Protected route component
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated()) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Auth Routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+
+        {/* Protected Routes */}
         <Route path="/" element={<Layout />}>
+          {/* Redirect from root to dashboard or quizzes */}
+          <Route index element={<Navigate to="/quizes" replace />} />
 
-          <Route path='/Dashboard' element={<h1>THis is Deshbord</h1>} />
+          {/* Dashboard */}
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } />
 
-          <Route path="/quizes" element={<Home />} />
+          {/* Quiz Management */}
+          <Route path="/create-quiz" element={
+            <ProtectedRoute>
+              <QuizForm />
+            </ProtectedRoute>
+          } />
 
-          <Route path="/quiz/test" element={<QuizTest />} />
+          <Route path="/edit-quiz/:id" element={
+            <ProtectedRoute>
+              <QuizForm />
+            </ProtectedRoute>
+          } />
 
+          {/* User Profile */}
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
+
+          {/* Public Routes */}
+          <Route path="/quizes" element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>} />
+
+          <Route path="/quiz/test" element={
+            <ProtectedRoute>
+              <QuizTest />
+            </ProtectedRoute>
+
+          } />
         </Route>
-
 
         {/* 404 Error Page */}
         <Route

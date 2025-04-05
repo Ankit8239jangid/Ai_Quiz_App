@@ -9,7 +9,7 @@ const QuestionSchema = zod.object({
 
 const QuizSchema = zod.object({
     title: zod.string().min(3, "Title must be at least 3 characters long"),
-    timeLimit: zod.number().min(1, "Time limit must be at least 1 minute"),
+    timeLimit: zod.string().min(1, "Time limit must be at least 1 minute"),
     field: zod.string().min(3, "Field limit must be at least 3 characters long"),
     numQuestions: zod.number().min(1, "Number of questions must be at least 1"),
     questions: zod.array(QuestionSchema)

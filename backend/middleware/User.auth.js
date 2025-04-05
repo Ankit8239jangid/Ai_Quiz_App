@@ -56,11 +56,7 @@ export const verifyToken = (req, res, next) => {
 
         // Also set userId specifically for backwards compatibility
         req.userId = decoded.userId;
-        
-
-        console.log("Decoded token payload:", decoded); // Debug log
-        console.log("User ID from token:", decoded.userId); // Debug log
-
+    
         next();
     } catch (error) {
         if (error instanceof jwt.JsonWebTokenError) {

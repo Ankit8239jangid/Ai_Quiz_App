@@ -45,7 +45,7 @@ export const AppProvider = ({ children }) => {
         (async () => {
             try {
                 setIsLoading(true);
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/all_quiz`);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/quiz/all_quiz`);
                 setQuizzes(response.data.quizzes);
             } catch (error) {
                 console.error("Error fetching quizzes:", error);
@@ -61,7 +61,7 @@ export const AppProvider = ({ children }) => {
         (async () => {
             try {
                 setIsLoading(true); 
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/${id}`);
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/quiz/${id}`);
 
                 setSelectQuizze(response.data.quiz); 
             } catch (error) {
