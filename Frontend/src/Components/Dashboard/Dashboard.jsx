@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/auth.context';
 import { useAppContext } from '../../context/app.context';
 import axios from 'axios';
-import { FaChartBar, FaCheckCircle, FaClipboardList, FaPlus, FaHistory } from 'react-icons/fa';
+import { FaChartBar, FaCheckCircle, FaClipboardList, FaPlus, FaHistory, FaRobot } from 'react-icons/fa';
 
 const Dashboard = () => {
     const [stats, setStats] = useState(null);
@@ -11,43 +11,43 @@ const Dashboard = () => {
     const [recentAttempts, setRecentAttempts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    
+
     const { currentUser, isAuthenticated } = useAuth();
     const { theme } = useAppContext();
     const navigate = useNavigate();
-    
+
     useEffect(() => {
         // Redirect if not authenticated
         if (!isAuthenticated()) {
             navigate('/login');
             return;
         }
-        
+
         // Fetch dashboard data
         const fetchDashboardData = async () => {
             try {
                 setLoading(true);
                 setError(null);
-                
+
                 // Fetch user stats
                 const statsResponse = await axios.get(
                     `${import.meta.env.VITE_BACKEND_URL}/progress/stats/summary`
                 );
-                
+
                 // Fetch user's quizzes
                 const quizzesResponse = await axios.get(
                     `${import.meta.env.VITE_BACKEND_URL}/quiz/my-quizzes`
                 );
-                
+
                 // Fetch user's progress
                 const progressResponse = await axios.get(
                     `${import.meta.env.VITE_BACKEND_URL}/progress`
                 );
-                
+
                 setStats(statsResponse.data.stats);
                 setMyQuizzes(quizzesResponse.data.quizzes);
                 setRecentAttempts(progressResponse.data.progress.slice(0, 5));
-                
+
             } catch (error) {
                 console.error('Error fetching dashboard data:', error);
                 setError('Failed to load dashboard data. Please try again.');
@@ -55,10 +55,10 @@ const Dashboard = () => {
                 setLoading(false);
             }
         };
-        
+
         fetchDashboardData();
     }, [isAuthenticated, navigate]);
-    
+
     if (loading) {
         return (
             <div className="flex justify-center items-center min-h-screen">
@@ -66,13 +66,13 @@ const Dashboard = () => {
             </div>
         );
     }
-    
+
     if (error) {
         return (
             <div className="flex justify-center items-center min-h-screen">
                 <div className="text-center p-6 max-w-md">
                     <p className="text-red-500 mb-4">{error}</p>
-                    <button 
+                    <button
                         onClick={() => window.location.reload()}
                         className="px-4 py-2 bg-primary-light text-white rounded-lg hover:bg-indigo-700"
                     >
@@ -82,7 +82,7 @@ const Dashboard = () => {
             </div>
         );
     }
-    
+
     return (
         <div className={`min-h-screen p-6 ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-800'}`}>
             <div className="max-w-6xl mx-auto">
@@ -93,16 +93,25 @@ const Dashboard = () => {
                             Welcome back, {currentUser?.firstname || 'User'}!
                         </p>
                     </div>
-                    
-                    <button
-                        onClick={() => navigate('/create-quiz')}
-                        className={`mt-4 md:mt-0 px-4 py-2 rounded-lg flex items-center ${theme === 'dark' ? 'bg-primary-dark hover:bg-indigo-600' : 'bg-primary-light hover:bg-indigo-700'} text-white transition-colors duration-300`}
-                    >
-                        <FaPlus className="mr-2" />
-                        Create New Quiz
-                    </button>
+
+                    <div className="flex flex-col md:flex-row gap-2">
+                        <button
+                            onClick={() => navigate('/generate-quiz')}
+                            className={`mt-4 md:mt-0 px-4 py-2 rounded-lg flex items-center ${theme === 'dark' ? 'bg-blue-700 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'} text-white transition-colors duration-300`}
+                        >
+                            <FaRobot className="mr-2" />
+                            AI Generate Quiz
+                        </button>
+                        <button
+                            onClick={() => navigate('/create-quiz')}
+                            className={`mt-4 md:mt-0 px-4 py-2 rounded-lg flex items-center ${theme === 'dark' ? 'bg-primary-dark hover:bg-indigo-600' : 'bg-primary-light hover:bg-indigo-700'} text-white transition-colors duration-300`}
+                        >
+                            <FaPlus className="mr-2" />
+                            Create New Quiz
+                        </button>
+                    </div>
                 </div>
-                
+
                 {/* Stats Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     <div className={`p-6 rounded-lg shadow-md ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
@@ -114,7 +123,7 @@ const Dashboard = () => {
                         </div>
                         <p className="text-3xl font-bold">{stats?.totalQuizzes || 0}</p>
                     </div>
-                    
+
                     <div className={`p-6 rounded-lg shadow-md ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
                         <div className="flex items-center mb-4">
                             <div className={`p-3 rounded-full ${theme === 'dark' ? 'bg-green-900 text-green-300' : 'bg-green-100 text-green-600'}`}>
@@ -124,7 +133,7 @@ const Dashboard = () => {
                         </div>
                         <p className="text-3xl font-bold">{stats?.completedQuizzes || 0}</p>
                     </div>
-                    
+
                     <div className={`p-6 rounded-lg shadow-md ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
                         <div className="flex items-center mb-4">
                             <div className={`p-3 rounded-full ${theme === 'dark' ? 'bg-purple-900 text-purple-300' : 'bg-purple-100 text-purple-600'}`}>
@@ -134,7 +143,7 @@ const Dashboard = () => {
                         </div>
                         <p className="text-3xl font-bold">{stats?.averageScore ? `${Math.round(stats.averageScore)}%` : '0%'}</p>
                     </div>
-                    
+
                     <div className={`p-6 rounded-lg shadow-md ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
                         <div className="flex items-center mb-4">
                             <div className={`p-3 rounded-full ${theme === 'dark' ? 'bg-yellow-900 text-yellow-300' : 'bg-yellow-100 text-yellow-600'}`}>
@@ -145,11 +154,11 @@ const Dashboard = () => {
                         <p className="text-3xl font-bold">{stats?.highestScore ? `${Math.round(stats.highestScore)}%` : '0%'}</p>
                     </div>
                 </div>
-                
+
                 {/* My Quizzes */}
                 <div className={`p-6 rounded-lg shadow-md mb-8 ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
                     <h2 className="text-xl font-bold mb-4">My Quizzes</h2>
-                    
+
                     {myQuizzes.length === 0 ? (
                         <div className={`p-4 rounded-lg ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100'}`}>
                             <p className="text-center">You haven't created any quizzes yet.</p>
@@ -176,8 +185,8 @@ const Dashboard = () => {
                                 </thead>
                                 <tbody>
                                     {myQuizzes.map((quiz) => (
-                                        <tr 
-                                            key={quiz._id} 
+                                        <tr
+                                            key={quiz._id}
                                             className={`hover:${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-50'} transition-colors duration-150`}
                                         >
                                             <td className="py-3 px-4">{quiz.title}</td>
@@ -207,11 +216,11 @@ const Dashboard = () => {
                         </div>
                     )}
                 </div>
-                
+
                 {/* Recent Attempts */}
                 <div className={`p-6 rounded-lg shadow-md ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
                     <h2 className="text-xl font-bold mb-4">Recent Quiz Attempts</h2>
-                    
+
                     {recentAttempts.length === 0 ? (
                         <div className={`p-4 rounded-lg ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100'}`}>
                             <p className="text-center">You haven't attempted any quizzes yet.</p>
@@ -238,16 +247,16 @@ const Dashboard = () => {
                                 </thead>
                                 <tbody>
                                     {recentAttempts.map((attempt) => (
-                                        <tr 
-                                            key={attempt._id} 
+                                        <tr
+                                            key={attempt._id}
                                             className={`hover:${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-50'} transition-colors duration-150`}
                                         >
                                             <td className="py-3 px-4">{attempt.quizId?.title || 'Unknown Quiz'}</td>
                                             <td className="py-3 px-4">{attempt.quizId?.field || 'N/A'}</td>
                                             <td className="py-3 px-4">
-                                                <span 
+                                                <span
                                                     className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                                        attempt.score >= 70 
+                                                        attempt.score >= 70
                                                             ? theme === 'dark' ? 'bg-green-900 text-green-200' : 'bg-green-100 text-green-800'
                                                             : attempt.score >= 40
                                                                 ? theme === 'dark' ? 'bg-yellow-900 text-yellow-200' : 'bg-yellow-100 text-yellow-800'

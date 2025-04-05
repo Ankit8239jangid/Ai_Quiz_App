@@ -15,6 +15,9 @@ export const AppProvider = ({ children }) => {
     const [Selectquizze, setSelectQuizze] = useState(null);
     const [score, setScore] = useState(0);
     const [userAnswers, setUserAnswers] = useState([]);
+    const [commonFields, setCommonFields] = useState([]);
+
+
 
     // Theme state management
     const [theme, setTheme] = useState(() => {
@@ -60,18 +63,31 @@ export const AppProvider = ({ children }) => {
     const FetchApi = (id) => {
         (async () => {
             try {
-                setIsLoading(true); 
+                setIsLoading(true);
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/quiz/${id}`);
 
-                setSelectQuizze(response.data.quiz); 
+                setSelectQuizze(response.data.quiz);
             } catch (error) {
                 console.error("Error fetching quiz:", error);
                 setSelectQuizze(null);
             } finally {
-                setIsLoading(false); 
+                setIsLoading(false);
             }
         })();
     }
+
+    // Fetch common fields from the backend
+    useEffect(() => {
+        (async () => {
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/quiz/fields`);
+                setCommonFields(response.data.fields);
+            } catch (error) {
+                console.error('Error fetching fields:', error);
+                toast.error('Failed to load quiz fields');
+            }
+        })();
+    }, []);
 
 
 
@@ -96,6 +112,9 @@ export const AppProvider = ({ children }) => {
         setIsLoading,
         theme,
         toggleTheme,
+        commonFields,
+        setCommonFields
+
     };
 
     return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

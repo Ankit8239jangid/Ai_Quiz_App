@@ -4,6 +4,8 @@ import Layout from './Layout/Layout';
 import Home from './Components/Browse Quizzes/Home';
 import Dashboard from './Components/Dashboard/Dashboard';
 import QuizForm from './Components/Quiz/QuizForm';
+import GeneratedResponse from './Components/Quiz/GeneratedResponse';
+import AIQuizGenerator from './Components/Quiz/AIQuizGenerator';
 import QuizTest from './Components/QuizTestPage/QuizTest';
 import Login from './Components/Auth/Login';
 import Signup from './Components/Auth/Signup';
@@ -52,6 +54,18 @@ export default function App() {
           <Route path="/edit-quiz/:id" element={
             <ProtectedRoute>
               <QuizForm />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/quiz-response/:id" element={
+            <ProtectedRoute>
+              <GeneratedResponse />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/generate-quiz" element={
+            <ProtectedRoute>
+              <AIQuizGenerator />
             </ProtectedRoute>
           } />
 

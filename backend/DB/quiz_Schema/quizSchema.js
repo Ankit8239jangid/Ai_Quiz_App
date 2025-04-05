@@ -12,6 +12,7 @@ const quizSchema = new mongoose.Schema({
     }],  // Embed questions directly
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     createdAt: { type: Date, default: Date.now },
+    generatedResponse: { type: String }, // Store the generated text response
 });
 
 const Quiz = mongoose.model("Quiz", quizSchema);

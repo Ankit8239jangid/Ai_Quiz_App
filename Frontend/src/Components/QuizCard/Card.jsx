@@ -5,7 +5,7 @@ function QuizCard({ heading, Field, Questions, Time, link }) {
     const navigate = useNavigate();
     const { theme } = useAppContext();
     return (
-        <div className={`card h-56 w-auto m-5 rounded-2xl overflow-hidden transition-all duration-300
+        <div className={`card h-auto w-auto m-5 rounded-2xl overflow-hidden transition-all duration-300
             ${theme === 'dark' ?
                 'border border-gray-700 bg-card-dark text-text-dark shadow-md shadow-gray-800' :
                 'border border-gray-200 bg-card-light text-text-light shadow-md shadow-gray-300'}

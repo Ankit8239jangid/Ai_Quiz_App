@@ -12,7 +12,8 @@ import {
     FaSun,
     FaMoon,
     FaSignOutAlt,
-    FaUser
+    FaUser,
+    FaRobot
 } from 'react-icons/fa';
 import { useAppContext } from '../../context/app.context';
 import { useAuth } from '../../context/auth.context';
@@ -28,16 +29,15 @@ function SideBar() {
     };
 
     // Sidebar items based on authentication status
-  
-  // Items for authenticated users
-        const sidebarItems = [
-            { icon: <TbLayoutDashboardFilled />, label: 'Dashboard', to: '/dashboard' },
-            { icon: <FaTh />, label: 'Browse Quizzes', to: '/quizes' },
-            { icon: <FaPlus />, label: 'Create Quiz', to: '/create-quiz' },
-            { icon: <FaUser />, label: 'Profile', to: '/profile' },
-        ];
 
-        isAuthenticated() && [...sidebarItems];
+    // Sidebar items based on authentication status
+    const sidebarItems = [
+        { icon: <TbLayoutDashboardFilled />, label: 'Dashboard', to: '/dashboard' },
+        { icon: <FaTh />, label: 'Browse Quizzes', to: '/quizes' },
+        { icon: <FaPlus />, label: 'Create Quiz', to: '/create-quiz' },
+        { icon: <FaRobot />, label: 'AI Generate Quiz', to: '/generate-quiz' },
+        { icon: <FaUser />, label: 'Profile', to: '/profile' },
+    ];
 
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);

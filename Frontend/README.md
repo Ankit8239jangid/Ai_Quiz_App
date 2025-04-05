@@ -1,8 +1,3 @@
-# React + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+{
+    "response": "```json\n{\n  \"title\": \"Solar System Quiz\",\n  \"timeLimit\": 5,  // Example time limit, can be adjusted\n  \"field\": \"Astronomy\",\n  \"numQuestions\": 3,\n  \"questions\": [\n    {\n      \"question\": \"Which planet is known as the 'Red Planet'?\",\n      \"options\": [\"Mars\", \"Jupiter\", \"Venus\", \"Saturn\"],\n      \"correctAnswer\": \"Mars\"\n    },\n    {\n      \"question\": \"What is the largest planet in our solar system?\",\n      \"options\": [\"Earth\", \"Neptune\", \"Jupiter\", \"Uranus\"],\n      \"correctAnswer\": \"Jupiter\"\n    },\n    {\n      \"question\": \"Which celestial body is at the center of our solar system?\",\n      \"options\": [\"Moon\", \"Sun\", \"Earth\", \"Pluto\"],\n      \"correctAnswer\": \"Sun\"\n    }\n  ]\n}\n```\n"
+}

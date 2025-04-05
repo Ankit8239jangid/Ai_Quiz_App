@@ -8,7 +8,7 @@ import NotFound from '/NotFound.svg';
 
 function Home() {
     const { quizzes, search, selectedField, isLoading, theme } = useAppContext();
-
+ 
     // Filter quizzes based on search and field
     const filteredQuizzes = quizzes.filter(quiz => {
         const matchesSearch = quiz.title.toLowerCase().includes(search.toLowerCase());

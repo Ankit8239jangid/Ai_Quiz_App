@@ -4,7 +4,8 @@ import { useAuth } from '../../context/auth.context';
 import { useAppContext } from '../../context/app.context';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { FaPlus, FaTimes, FaSave, FaArrowLeft, FaTrash } from 'react-icons/fa';
+import { FaPlus, FaTimes, FaSave, FaArrowLeft, FaTrash, FaRobot } from 'react-icons/fa';
+import GeneratedResponse from './GeneratedResponse';
 
 const QuizForm = () => {
     const { id } = useParams(); // For editing existing quiz
@@ -456,6 +457,11 @@ const QuizForm = () => {
                             </div>
                         ))}
                     </div>
+
+                    {/* Show Generated Response for edit mode */}
+                    {isEditMode && (
+                        <GeneratedResponse />
+                    )}
 
                     <div className="flex justify-end">
                         <button
