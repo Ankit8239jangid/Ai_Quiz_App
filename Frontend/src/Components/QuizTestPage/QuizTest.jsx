@@ -12,9 +12,9 @@ function QuizTest() {
 
     useEffect(() => {
         if (id) {
-            FetchApi(id); // Fetch quiz details using the ID
+            FetchApi(id);
         }
-    }, [])  //this Is an iffy function that takes a input of ID
+    }, [])  
 
     return (
         <div className="min-h-screen flex flex-col overflow-auto items-center">

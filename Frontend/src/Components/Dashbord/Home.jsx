@@ -17,7 +17,7 @@ function Home() {
     });
 
     return (
-        <div className={`h-screen w-full  flex flex-col items-center ${theme === 'dark' ? 'bg-background-dark' : 'bg-background-light'}`}>
+        <div className={`h-auto rounded-xl w-full  flex flex-col items-center ${theme === 'dark' ? 'bg-background-dark' : 'bg-background-light'}`}>
             <div className="flex items-center justify-center gap-3 text-2xl md:text-3xl font-semibold  px-4 text-center">
                 <span className={theme === 'dark' ? 'text-white' : 'text-gray-800'}>Find Your Quiz</span>
                 <img src={logo} alt="Quiz Logo" className="h-16 hover:scale-110 transition-transform duration-300" />

@@ -25,10 +25,8 @@ export const AppProvider = ({ children }) => {
 
     // Effect to apply theme class to document and save preference
     useEffect(() => {
-        // Save theme preference to localStorage
         localStorage.setItem('theme', theme);
 
-        // Apply theme class to document element
         const root = document.documentElement;
         if (theme === 'dark') {
             root.classList.add('dark');
@@ -62,22 +60,22 @@ export const AppProvider = ({ children }) => {
     const FetchApi = (id) => {
         (async () => {
             try {
-                setIsLoading(true); // ✅ No longer using context
+                setIsLoading(true); 
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/${id}`);
 
-                setSelectQuizze(response.data.quiz); // ✅ Correctly set quiz data
+                setSelectQuizze(response.data.quiz); 
             } catch (error) {
                 console.error("Error fetching quiz:", error);
                 setSelectQuizze(null);
             } finally {
-                setIsLoading(false); // ✅ Works correctly now
+                setIsLoading(false); 
             }
         })();
     }
 
 
 
-    // Values to be shared across components
+
     const value = {
         isSidebarOpen,
         isLoading,
@@ -96,7 +94,6 @@ export const AppProvider = ({ children }) => {
         Selectquizze,
         setSelectQuizze,
         setIsLoading,
-        // Theme related values
         theme,
         toggleTheme,
     };
