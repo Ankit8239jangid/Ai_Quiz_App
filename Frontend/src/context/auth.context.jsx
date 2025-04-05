@@ -3,7 +3,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 
 // Set the base URL for API requests
-const API_URL = import.meta.env.VITE_BACKEND_URL ;
+const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 // Create the context
 const AuthContext = createContext();
@@ -197,7 +197,12 @@ export const AuthProvider = ({ children }) => {
 
     // Check if user is authenticated
     const isAuthenticated = () => {
-        return !!token;
+        const token = localStorage.getItem('token');
+        if (token) {
+            return true;
+        } else {
+            return false;
+        }
     };
 
     // Values to be shared across components
