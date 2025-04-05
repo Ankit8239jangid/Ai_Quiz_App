@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import Layout from './Layout/Layout';
-import Home from './Components/Dashbord/Home';
+import Home from './Components/Browse Quizzes/Home';
 import Dashboard from './Components/Dashboard/Dashboard';
 import QuizForm from './Components/Quiz/QuizForm';
 import QuizTest from './Components/QuizTestPage/QuizTest';
