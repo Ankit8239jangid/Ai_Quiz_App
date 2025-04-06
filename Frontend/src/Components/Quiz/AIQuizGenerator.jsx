@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/auth.context';
+// We need auth for the token, but we'll get it from localStorage directly
 import { useAppContext } from '../../context/app.context';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { FaRobot, FaSpinner, FaArrowLeft, FaLightbulb, FaCheck } from 'react-icons/fa';
 
 const AIQuizGenerator = () => {
-    const [prompt, setPrompt] = useState('');
+    const [prompt, setPrompt] = useState('Create a quiz about');
     const [field, setField] = useState('');
-    const [numQuestions, setNumQuestions] = useState('');
+    const [numQuestions, setNumQuestions] = useState(5);
     const [loading, setLoading] = useState(false);
     const [generatedQuiz, setGeneratedQuiz] = useState(null);
 
     const { theme, commonFields } = useAppContext();
     const navigate = useNavigate();
+
+    // Check if user is authenticated by checking for token
+    const isAuthenticated = () => !!localStorage.getItem('token');
 
     const examplePrompts = [
         'Create a quiz about the solar system and planets',
@@ -35,19 +38,20 @@ const AIQuizGenerator = () => {
         try {
             setLoading(true);
 
-            const token = localStorage.getItem('token');
-            if (!token) {
+            if (!isAuthenticated()) {
                 toast.error('You must be logged in to generate quizzes');
                 navigate('/login');
                 return;
             }
+
+            const token = localStorage.getItem('token');
 
             const response = await axios.post(
                 `${import.meta.env.VITE_BACKEND_URL}/quiz/generate-ai-quiz`,
                 {
                     prompt,
                     field,
-                    numQuestions: parseInt(numQuestions)
+                    numQuestions: numQuestions
                 },
                 {
                     headers: {
@@ -58,9 +62,9 @@ const AIQuizGenerator = () => {
 
             if (response.data.success) {
                 const quiz = response.data.quiz;
-                if (quiz.questions.length !== parseInt(numQuestions)) {
-                    quiz.questions = quiz.questions.slice(0, parseInt(numQuestions));
-                    quiz.numQuestions = parseInt(numQuestions);
+                if (quiz.questions.length !== numQuestions) {
+                    quiz.questions = quiz.questions.slice(0, numQuestions);
+                    quiz.numQuestions = numQuestions;
                 }
                 setGeneratedQuiz(quiz);
                 toast.success('Quiz generated successfully!');
@@ -75,19 +79,15 @@ const AIQuizGenerator = () => {
         }
     };
 
-    const handleUseQuiz = () => {
-        if (generatedQuiz) {
-            navigate(`/edit-quiz/${generatedQuiz._id}`);
-        }
-    };
+
 
     const handleTryAgain = () => {
         setGeneratedQuiz(null);
     };
 
     const handleChange = (e) => {
-        const value = e.target.value;
-        if (value >= 1 && value <= 20) {
+        const value = parseInt(e.target.value);
+        if (!isNaN(value) && value >= 1 && value <= 20) {
             setNumQuestions(value);
         }
     };
@@ -145,7 +145,7 @@ const AIQuizGenerator = () => {
                                             value={field}
                                             onChange={(e) => setField(e.target.value)}
                                             className={`w-full px-4 py-3 rounded-lg border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-800'} focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                                          
+
                                         >
                                             <option value="" disabled>Select a field</option>
                                             {commonFields && commonFields.length > 0 ? (
@@ -225,10 +225,10 @@ const AIQuizGenerator = () => {
 
                             <div className="flex flex-col sm:flex-row justify-center gap-4">
                                 <button
-                                    onClick={handleUseQuiz}
+                                    onClick={() => navigate('/app/quizzes')}
                                     className="px-6 py-3 rounded-lg font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-300"
                                 >
-                                    Edit This Quiz
+                                    View Generated Quiz
                                 </button>
                                 <button
                                     onClick={handleTryAgain}

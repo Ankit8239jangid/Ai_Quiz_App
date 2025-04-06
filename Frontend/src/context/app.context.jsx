@@ -43,13 +43,19 @@ export const AppProvider = ({ children }) => {
         setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
     };
 
-    // Fetch all quizzes from the backend
+ // Fetch all quizzes from the backend
     useEffect(() => {
         (async () => {
             try {
                 setIsLoading(true);
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/quiz/all_quiz`);
-                setQuizzes(response.data.quizzes);
+
+                // Sort quizzes by creation date (newest first)
+                const sortedQuizzes = response.data.quizzes.sort((a, b) => {
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                });
+
+                setQuizzes(sortedQuizzes);
             } catch (error) {
                 console.error("Error fetching quizzes:", error);
             } finally {

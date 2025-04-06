@@ -6,10 +6,11 @@ import { generateTextResponse } from "../utils/Googel-Api.js";
 export const quizRoute = express.Router();
 
 
-quizRoute.post('/generate-ai-quiz', async (req, res) => {
+quizRoute.post('/generate-ai-quiz', verifyToken, async (req, res) => {
     const { prompt, field = 'General Knowledge', numQuestions = 6 } = req.body;
 
     try {
+        // Don't reassign the parameter, just pass it to the function
         let generatedQuiz = await generateTextResponse(prompt, field, numQuestions);
 
 
@@ -103,6 +104,36 @@ quizRoute.get("/all_quiz", async (_, res) => {
     }
 });
 
+
+// Add a delete route to delete a quiz by ID
+quizRoute.delete("/delete/:id", verifyToken, async (req, res) => {
+    const { id } = req.params;
+    try {
+        // Check if the quiz exists and belongs to the user
+        const quiz = await Quiz.findOne({ _id: id, createdBy: req.userId });
+
+        if (!quiz) {
+            return res.status(404).json({
+                success: false,
+                message: "Quiz not found or you don't have permission to delete it"
+            });
+        }
+
+        // Delete the quiz
+        await Quiz.findByIdAndDelete(id);
+
+        res.status(200).json({
+            success: true,
+            message: "Quiz deleted successfully"
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to delete quiz",
+            error: error.message
+        });
+    }
+});
 
 //Add a put route to update a quiz by ID
 quizRoute.put("/update/:id", verifyToken, async (req, res) => {

@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/auth.context';
 import { useAppContext } from '../../context/app.context';
 import axios from 'axios';
-import { FaChartBar, FaCheckCircle, FaClipboardList, FaPlus, FaHistory, FaRobot } from 'react-icons/fa';
+import { FaChartBar, FaCheckCircle, FaClipboardList, FaPlus, FaHistory, FaTrash } from 'react-icons/fa';
+import DashboardShimmer from './Loding';
+import toast from 'react-hot-toast';
 
 const Dashboard = () => {
     const [stats, setStats] = useState(null);
@@ -11,6 +13,7 @@ const Dashboard = () => {
     const [recentAttempts, setRecentAttempts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [deleteConfirmation, setDeleteConfirmation] = useState(null);
 
     const { currentUser, isAuthenticated } = useAuth();
     const { theme } = useAppContext();
@@ -59,11 +62,28 @@ const Dashboard = () => {
         fetchDashboardData();
     }, [isAuthenticated, navigate]);
 
+    const handleDeleteQuiz = async (quizId) => {
+        setDeleteConfirmation(quizId);
+    };
+
+    const confirmDeleteQuiz = async () => {
+        if (!deleteConfirmation) return;
+
+        try {
+            await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/quiz/delete/${deleteConfirmation}`);
+            setMyQuizzes(myQuizzes.filter(quiz => quiz._id !== deleteConfirmation));
+            setDeleteConfirmation(null);
+            toast.success('Quiz Delete Successfully')
+        } catch (error) {
+            console.error('Error deleting quiz:', error);
+            setError('Failed to delete quiz. Please try again.');
+            toast.success('Failed to delete quiz. Please try again.')
+        }
+    };
+
     if (loading) {
         return (
-            <div className="flex justify-center items-center min-h-screen">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-light"></div>
-            </div>
+           <DashboardShimmer/>
         );
     }
 
@@ -94,22 +114,13 @@ const Dashboard = () => {
                         </p>
                     </div>
 
-                    <div className="flex flex-col md:flex-row gap-2">
-                        <button
-                            onClick={() => navigate('/generate-quiz')}
-                            className={`mt-4 md:mt-0 px-4 py-2 rounded-lg flex items-center ${theme === 'dark' ? 'bg-blue-700 hover:bg-blue-600' : 'bg-blue-600 hover:bg-blue-700'} text-white transition-colors duration-300`}
-                        >
-                            <FaRobot className="mr-2" />
-                            AI Generate Quiz
-                        </button>
-                        <button
-                            onClick={() => navigate('/create-quiz')}
-                            className={`mt-4 md:mt-0 px-4 py-2 rounded-lg flex items-center ${theme === 'dark' ? 'bg-primary-dark hover:bg-indigo-600' : 'bg-primary-light hover:bg-indigo-700'} text-white transition-colors duration-300`}
-                        >
-                            <FaPlus className="mr-2" />
-                            Create New Quiz
-                        </button>
-                    </div>
+                    <button
+                        onClick={() => navigate('/create-quiz')}
+                        className={`mt-4 md:mt-0 px-4 py-2 rounded-lg flex items-center ${theme === 'dark' ? 'bg-primary-dark hover:bg-indigo-600' : 'bg-primary-light hover:bg-indigo-700'} text-white transition-colors duration-300`}
+                    >
+                        <FaPlus className="mr-2" />
+                        Create New Quiz
+                    </button>
                 </div>
 
                 {/* Stats Cards */}
@@ -196,7 +207,7 @@ const Dashboard = () => {
                                             <td className="py-3 px-4">
                                                 <div className="flex space-x-2">
                                                     <button
-                                                        onClick={() => navigate(`/edit-quiz/${quiz._id}`)}
+                                                        onClick={() => navigate(`/app/edit-quiz/${quiz._id}`)}
                                                         className={`px-3 py-1 rounded ${theme === 'dark' ? 'bg-blue-900 hover:bg-blue-800 text-blue-200' : 'bg-blue-100 hover:bg-blue-200 text-blue-700'}`}
                                                     >
                                                         Edit
@@ -207,6 +218,12 @@ const Dashboard = () => {
                                                     >
                                                         View
                                                     </button>
+                                                    <button
+                                                        onClick={() => handleDeleteQuiz(quiz._id)}
+                                                        className={`px-3 py-1 rounded ${theme === 'dark' ? 'bg-red-900 hover:bg-red-800 text-red-200' : 'bg-red-100 hover:bg-red-200 text-red-700'}`}
+                                                    >
+                                                        <FaTrash />
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -216,6 +233,30 @@ const Dashboard = () => {
                         </div>
                     )}
                 </div>
+
+                {/* Delete Confirmation Modal */}
+                {deleteConfirmation && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                        <div className={`p-6 rounded-lg ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
+                            <h3 className="text-xl font-bold mb-4">Confirm Delete</h3>
+                            <p>Are you sure you want to delete this quiz?</p>
+                            <div className="mt-4 flex justify-end space-x-2">
+                                <button
+                                    onClick={() => setDeleteConfirmation(null)}
+                                    className={`px-4 py-2 rounded ${theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'}`}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={confirmDeleteQuiz}
+                                    className={`px-4 py-2 rounded ${theme === 'dark' ? 'bg-red-700 hover:bg-red-600' : 'bg-red-500 hover:bg-red-600'} text-white`}
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Recent Attempts */}
                 <div className={`p-6 rounded-lg shadow-md ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>

@@ -32,11 +32,11 @@ function SideBar() {
 
     // Sidebar items based on authentication status
     const sidebarItems = [
-        { icon: <TbLayoutDashboardFilled />, label: 'Dashboard', to: '/dashboard' },
-        { icon: <FaTh />, label: 'Browse Quizzes', to: '/quizes' },
-        { icon: <FaPlus />, label: 'Create Quiz', to: '/create-quiz' },
-        { icon: <FaRobot />, label: 'AI Generate Quiz', to: '/generate-quiz' },
-        { icon: <FaUser />, label: 'Profile', to: '/profile' },
+        { icon: <TbLayoutDashboardFilled />, label: 'Dashboard', to: '/app/dashboard' },
+        { icon: <FaTh />, label: 'Browse Quizzes', to: '/app/quizzes' },
+        { icon: <FaPlus />, label: 'Create Quiz', to: '/app/create-quiz' },
+        { icon: <FaRobot />, label: 'AI Generate Quiz', to: '/app/generate-quiz' },
+        { icon: <FaUser />, label: 'Profile', to: '/app/profile' },
     ];
 
 

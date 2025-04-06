@@ -8,9 +8,12 @@ export default {
   theme: {
     extend: {
       colors: {
+        'custom-purple': '#6A0DAD',
+        'custom-pink': '#FF6F91',
         primary: {
           light: '#6366f1', // indigo-600
           dark: '#818cf8'   // indigo-400
+
         },
         secondary: {
           light: '#9333ea', // purple-600

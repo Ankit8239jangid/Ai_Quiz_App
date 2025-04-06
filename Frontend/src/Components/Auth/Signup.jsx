@@ -82,7 +82,7 @@ const Signup = () => {
 
             if (result.success) {
                 // Success is already handled by toast in auth context
-                navigate('/dashboard');
+                navigate('/app/dashboard');
             } else {
                 // Show error toast
                 toast.error(result.message);
@@ -211,7 +211,7 @@ const Signup = () => {
                             to="/login"
                             className={`font-medium ${theme === 'dark' ? 'text-primary-dark hover:text-indigo-400' : 'text-primary-light hover:text-indigo-700'}`}
                         >
-                            Sign in
+                            Login
                         </Link>
                     </p>
                 </div>

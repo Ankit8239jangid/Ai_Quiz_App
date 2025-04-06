@@ -6,8 +6,10 @@ import ShimmerCard from '../../Layout/shimmerCardeUI';
 import logo from '/logo.png';
 import NotFound from '/NotFound.svg';
 
+
 function Home() {
-    const { quizzes, search, selectedField, isLoading, theme } = useAppContext();
+
+    const {quizzes, search, selectedField, isLoading, theme } = useAppContext();
  
     // Filter quizzes based on search and field
     const filteredQuizzes = quizzes.filter(quiz => {
@@ -16,18 +18,19 @@ function Home() {
         return matchesSearch && matchesField;
     });
 
+   
     return (
         <div className={`min-h-screen p-4  ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'}`}>
             <div className="max-w-7xl mx-auto">
-                <header className="flex flex-row items-center  gap-5 mb-8">
-                    <div className="flex items-center mb-4 md:mb-0 ">
+                <header className="flex flex-row items-center  md:transform md:translate-x-60  gap-5 mb-8">
+                    <div className="flex items-center justify-center mb-4 md:mb-0 ">
                         <img src={logo} alt="Quiz Logo" className="h-12 md:h-16  hover:scale-110 transition-transform duration-300" />
                         <h1 className="text-3xl md:text-4xl font-bold">Find Your Quiz</h1>
                     </div>
                     <FaLightbulb className={`text-2xl md:text-3xl ${theme === 'dark' ? 'text-yellow-300' : 'text-yellow-500'}`} />
                 </header>
 
-                <QuizFilter />
+                <QuizFilter /> 
 
                 <main className="mt-8">
                     {isLoading ? (
@@ -43,7 +46,7 @@ function Home() {
                                     Field={field || "General"}
                                     Questions={numQuestions}
                                     Time={timeLimit}
-                                    link={`/quiz/test?id=${_id}&name=${encodeURIComponent(title)}&field=${encodeURIComponent(field || "General")}&questions=${numQuestions}&time=${timeLimit}`}
+                                    link={`/app/quiz/test?id=${_id}&name=${encodeURIComponent(title)}&field=${encodeURIComponent(field || "General")}&questions=${numQuestions}&time=${timeLimit}`}
                                 />
                             ))}
                         </div>

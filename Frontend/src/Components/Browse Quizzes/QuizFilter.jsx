@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useAppContext } from '../../context/app.context';
 import { FaSearch, FaTimes, FaFilter } from 'react-icons/fa';
+import { TbRefresh } from 'react-icons/tb';
 
 function QuizFilter() {
     const { quizzes = [], search = '', setSearch, selectedField = 'All', setSelectedField, theme } = useAppContext();
@@ -30,6 +31,7 @@ function QuizFilter() {
                         </span>
                         <input
                             id="quiz-search"
+                            autoFocus={true}
                             type="text"
                             placeholder="Search quizzes..."
                             value={search}
@@ -38,8 +40,8 @@ function QuizFilter() {
                             focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
                             transition-all duration-300 ease-in-out
                             shadow-sm text-sm ${theme === 'dark' ?
-                                'bg-gray-800 border border-gray-700 text-white placeholder-gray-400 hover:border-gray-600' :
-                                'bg-white border border-gray-200 text-gray-800 placeholder-gray-400 hover:border-indigo-300'}`}
+                                    'bg-gray-800 border border-gray-700 text-white placeholder-gray-400 hover:border-gray-600' :
+                                    'bg-white border border-gray-200 text-gray-800 placeholder-gray-400 hover:border-indigo-300'}`}
                             aria-label="Search quizzes"
                         />
                         {search && (
@@ -67,8 +69,8 @@ function QuizFilter() {
                         focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
                         transition-all duration-300 ease-in-out
                         appearance-none shadow-sm text-sm cursor-pointer ${theme === 'dark' ?
-                            'bg-gray-800 border border-gray-700 text-white hover:border-gray-600' :
-                            'bg-white border border-gray-300 text-gray-800 hover:border-indigo-300'}`}
+                                'bg-gray-800 border border-gray-700 text-white hover:border-gray-600' :
+                                'bg-white border border-gray-300 text-gray-800 hover:border-indigo-300'}`}
                         aria-label="Filter by field"
                     >
                         {fields.map(field => (
@@ -79,8 +81,25 @@ function QuizFilter() {
                     </select>
                     {/* Custom dropdown arrow */}
                     <span className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                        <FaFilter className={`w-4 h-4 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
+                        <FaFilter className={`w-4 h-4 ${theme === 'dark' ?  'text-gray-400' : 'text-gray-500'}`} />
                     </span>
+                </div>
+
+                {/* refresh button */}
+                <div className="relative w-full sm:w-40">
+                    <button
+                        onClick={() => window.location.reload()}
+                        className={`w-28 px-3 py-3 rounded-xl flex items-center jsustify-cente gap-4
+                        focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
+                        transition-all duration-300 ease-in-out
+                        appearance-none shadow-sm text-sm cursor-pointer ${theme === 'dark' ?
+                                'bg-gray-800 border border-gray-700 text-white hover:border-gray-600' :
+                                'bg-white border border-gray-300 text-gray-800 hover:border-indigo-300'}`}
+                        aria-label="Filter by field"
+                    >
+                        Refresh  <TbRefresh  className={`w-4 h-4 font-bold animate-spin  ${theme === 'dark' ?  'text-gray-400' : 'text-gray-500'}`} />
+                    </button>
+
                 </div>
             </div>
         </div>
