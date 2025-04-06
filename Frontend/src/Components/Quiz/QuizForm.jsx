@@ -4,7 +4,7 @@ import { useAuth } from '../../context/auth.context';
 import { useAppContext } from '../../context/app.context';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { FaPlus, FaTimes, FaSave, FaArrowLeft, FaTrash, FaRobot } from 'react-icons/fa';
+import { FaPlus, FaTimes, FaSave, FaArrowLeft, FaTrash } from 'react-icons/fa';
 import GeneratedResponse from './GeneratedResponse';
 
 const QuizForm = () => {
@@ -25,7 +25,6 @@ const QuizForm = () => {
     });
 
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
 
     const { isAuthenticated } = useAuth();
@@ -44,7 +43,7 @@ const QuizForm = () => {
             const fetchQuiz = async () => {
                 try {
                     setLoading(true);
-                    setError(null);
+                    
 
                     const response = await axios.get(
                         `${import.meta.env.VITE_BACKEND_URL}/quiz/with-answers/${id}`
@@ -64,7 +63,7 @@ const QuizForm = () => {
 
                 } catch (error) {
                     console.error('Error fetching quiz:', error);
-                    setError('Failed to load quiz data. You may not have permission to edit this quiz.');
+                    toast.error('Failed to load quiz data. You may not have permission to edit this quiz.');
                 } finally {
                     setLoading(false);
                 }
@@ -125,8 +124,8 @@ const QuizForm = () => {
 
     const removeQuestion = (index) => {
         if (formData.questions.length <= 1) {
-            setError('Quiz must have at least one question');
-            return;
+           
+            return toast.error('Quiz must have at least one question');
         }
 
         const updatedQuestions = [...formData.questions];
@@ -151,8 +150,8 @@ const QuizForm = () => {
         const question = updatedQuestions[questionIndex];
 
         if (question.options.length <= 2) {
-            setError('Each question must have at least 2 options');
-            return;
+           
+            return toast.error('Each question must have at least 2 options');
         }
 
         // If removing the correct answer, reset it
@@ -170,20 +169,20 @@ const QuizForm = () => {
     const validateForm = () => {
         // Check title
         if (!formData.title.trim()) {
-            setError('Quiz title is required');
-            return false;
+           
+            return toast.error('Quiz title is required');
         }
 
         // Check field
         if (!formData.field.trim()) {
-            setError('Quiz field is required');
-            return false;
+           
+            return toast.error('Quiz field is required');
         }
 
         // Check time limit
         if (formData.timeLimit < 1) {
-            setError('Time limit must be at least 1 minute');
-            return false;
+           
+            return toast.error('Time limit must be at least 1 minute');
         }
 
         // Check questions
@@ -191,22 +190,22 @@ const QuizForm = () => {
             const question = formData.questions[i];
 
             if (!question.question.trim()) {
-                setError(`Question ${i + 1} text is required`);
-                return false;
+               
+                return toast.error(`Question ${i + 1} text is required`);
             }
 
             // Check options
             for (let j = 0; j < question.options.length; j++) {
                 if (!question.options[j].trim()) {
-                    setError(`Option ${j + 1} for Question ${i + 1} is required`);
-                    return false;
+                   
+                    return toast.error(`Option ${j + 1} for Question ${i + 1} is required`);
                 }
             }
 
             // Check correct answer
             if (!question.correctAnswer) {
-                setError(`Correct answer for Question ${i + 1} is required`);
-                return false;
+               
+                return toast.error(`Correct answer for Question ${i + 1} is required`);
             }
         }
 
@@ -222,7 +221,7 @@ const QuizForm = () => {
 
         try {
             setLoading(true);
-            setError(null);
+            
             setSuccess(null);
 
             // Prepare data
@@ -253,13 +252,13 @@ const QuizForm = () => {
 
             // Redirect after a short delay
             setTimeout(() => {
-                navigate('/dashboard');
+                navigate('/app/quizzes');
             }, 2000);
 
         } catch (error) {
             console.error('Error saving quiz:', error);
             const errorMessage = error.response?.data?.message || 'Failed to save quiz. Please try again.';
-            setError(errorMessage);
+            
             toast.error(errorMessage);
         } finally {
             setLoading(false);
@@ -287,11 +286,7 @@ const QuizForm = () => {
                     <h1 className="text-2xl sm:text-3xl font-bold">{isEditMode ? 'Edit Quiz' : 'Create New Quiz'}</h1>
                 </div>
 
-                {error && (
-                    <div className="mb-4 sm:mb-6 p-3 sm:p-4 rounded-lg bg-red-100 text-red-700 border border-red-200">
-                        {error}
-                    </div>
-                )}
+               
 
                 {success && (
                     <div className="mb-4 sm:mb-6 p-3 sm:p-4 rounded-lg bg-green-100 text-green-700 border border-green-200">

@@ -20,7 +20,7 @@ import { useAuth } from '../../context/auth.context';
 
 function SideBar() {
     const { isSidebarOpen, setIsSidebarOpen, theme, toggleTheme } = useAppContext();
-    const { currentUser, isAuthenticated, logout } = useAuth();
+    const {  isAuthenticated, logout } = useAuth();
 
     // Handle logout
     const handleLogout = () => {

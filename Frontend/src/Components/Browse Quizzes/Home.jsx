@@ -22,7 +22,7 @@ function Home() {
     return (
         <div className={`min-h-screen p-4  ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'}`}>
             <div className="max-w-7xl mx-auto">
-                <header className="flex flex-row items-center  md:transform md:translate-x-60  gap-5 mb-8">
+                <header className="flex flex-row items-center   justify-center  gap-5 mb-8">
                     <div className="flex items-center justify-center mb-4 md:mb-0 ">
                         <img src={logo} alt="Quiz Logo" className="h-12 md:h-16  hover:scale-110 transition-transform duration-300" />
                         <h1 className="text-3xl md:text-4xl font-bold">Find Your Quiz</h1>
