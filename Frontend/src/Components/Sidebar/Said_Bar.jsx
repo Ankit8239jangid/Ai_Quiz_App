@@ -46,7 +46,7 @@ function SideBar() {
             <button
                 onClick={toggleSidebar}
                 type="button"
-                className={`fixed top-2 right-2 z-50 p-2 ${theme === 'dark' ? 'bg-gray-800' : 'bg-black'} rounded-lg md:hidden`}
+                className={`fixed top-2 right-2 z-50 p-2 ${theme === 'dark' ? 'text-white' : 'text-black'} rounded-lg md:hidden`}
             >
                 <span className="sr-only">Toggle sidebar</span>
                 {isSidebarOpen ? <FaTimes className="w-6 h-6" /> : <FaBars className="w-6 h-6" />}
