@@ -31,7 +31,7 @@ function QuizFilter() {
                         </span>
                         <input
                             id="quiz-search"
-                            autoFocus={true}
+                           
                             type="text"
                             placeholder="Search quizzes..."
                             value={search}

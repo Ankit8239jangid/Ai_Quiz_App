@@ -176,7 +176,7 @@ const Dashboard = () => {
                             <p className="text-center">You haven't attempted any quizzes yet.</p>
                             <div className="text-center mt-4">
                                 <button
-                                    onClick={() => navigate('/quizes')}
+                                    onClick={() => navigate('/app/quizes')}
                                     className={`px-4 py-2 rounded-lg ${theme === 'dark' ? 'bg-primary-dark hover:bg-indigo-600' : 'bg-primary-light hover:bg-indigo-700'} text-white transition-colors duration-300`}
                                 >
                                     Browse Quizzes

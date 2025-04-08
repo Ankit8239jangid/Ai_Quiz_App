@@ -11,7 +11,6 @@ app.use(express.json());
 app.use(
     cors({
         origin: 'https://ai-quiz-by-ankit.vercel.app',
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
     })
 );
 
