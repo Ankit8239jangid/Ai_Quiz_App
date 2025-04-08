@@ -344,7 +344,7 @@ const QuizForm = () => {
                                 Time Limit (minutes)
                             </label>
                             <input
-                                type="number"
+                                type="number" 
                                 id="timeLimit"
                                 name="timeLimit"
                                 value={formData.timeLimit}

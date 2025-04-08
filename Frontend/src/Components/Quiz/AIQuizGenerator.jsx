@@ -34,6 +34,11 @@ const AIQuizGenerator = () => {
             toast.error('Please enter a prompt for the quiz');
             return;
         }
+        if (!numQuestions || isNaN(numQuestions) || numQuestions < 1 || numQuestions > 20) {
+            toast.error('Please enter a valid number of questions between 1 and 20');
+            return;
+        }
+
 
         try {
             setLoading(true);
@@ -86,11 +91,19 @@ const AIQuizGenerator = () => {
     };
 
     const handleChange = (e) => {
-        const value = parseInt(e.target.value);
-        if (!isNaN(value) && value >= 1 && value <= 20) {
-            setNumQuestions(value);
+        const value = e.target.value;
+
+        if (value === '') {
+            setNumQuestions('');
+            return;
+        }
+
+        const num = parseInt(value);
+        if (!isNaN(num) && num >= 1 && num <= 20) {
+            setNumQuestions(num);
         }
     };
+
 
     const handleExamplePrompt = (examplePrompt) => {
         setPrompt(examplePrompt);
@@ -159,7 +172,11 @@ const AIQuizGenerator = () => {
                                     </div>
 
                                     <div>
-                                        <label htmlFor="numQuestions" className={`block mb-2 font-medium ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}`}>
+                                        <label
+                                            htmlFor="numQuestions"
+                                            className={`mb-2 font-medium ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
+                                                }`}
+                                        >
                                             Number of Questions
                                         </label>
                                         <input
@@ -169,10 +186,15 @@ const AIQuizGenerator = () => {
                                             onChange={handleChange}
                                             min={1}
                                             max={20}
-                                            required
-                                            className={`w-full px-4 py-3 rounded-lg border ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-800'} focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                                            placeholder="Enter number between 1 and 20"
+                                            className={`w-full px-4 py-3 rounded-lg border ${theme === 'dark'
+                                                ? 'bg-gray-700 border-gray-600 text-white'
+                                                : 'bg-white border-gray-300 text-gray-800'
+                                                } focus:outline-none focus:ring-2 focus:ring-blue-500`}
                                         />
+
                                     </div>
+
                                 </div>
 
                                 <button
