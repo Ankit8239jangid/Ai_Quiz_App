@@ -5,10 +5,11 @@ import QuizFilter from './QuizFilter';
 import ShimmerCard from '../../Layout/shimmerCardeUI';
 import logo from '/logo.png';
 import NotFound from '/NotFound.svg';
-
+import { useAuth } from '../../context/auth.context';
 
 
 function Home() {
+
     const { quizzes, search, selectedField, isLoading, theme } = useAppContext();
    
     // Filter quizzes based on search and field
