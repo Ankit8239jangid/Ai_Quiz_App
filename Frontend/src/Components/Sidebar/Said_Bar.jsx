@@ -5,8 +5,6 @@ import { TbLayoutDashboardFilled } from "react-icons/tb";
 import {
     FaTh,
     FaPlus,
-    FaSignInAlt,
-    FaUserPlus,
     FaBars,
     FaTimes,
     FaSun,
@@ -25,7 +23,7 @@ function SideBar() {
     // Handle logout
     const handleLogout = () => {
         logout();
-        window.location.href = '/login';
+        window.location.href = '/';
     };
 
     // Sidebar items based on authentication status

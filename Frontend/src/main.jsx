@@ -7,12 +7,12 @@ import { AppProvider } from './context/app.context.jsx'
 import { AuthProvider } from './context/auth.context.jsx'
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <AuthProvider>
-      <AppProvider>
-        <App />
-        <Toaster />
-      </AppProvider>
-    </AuthProvider>
-  </StrictMode>
+
+  <AuthProvider>
+    <AppProvider>
+      <App />
+      <Toaster />
+    </AppProvider>
+  </AuthProvider>
+
 )

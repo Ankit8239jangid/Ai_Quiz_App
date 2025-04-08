@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '../../context/auth.context';
 import { useAppContext } from '../../context/app.context';
 import { FaUser, FaLock, FaEnvelope, FaUserPlus } from 'react-icons/fa';
@@ -10,7 +11,7 @@ const Signup = () => {
         username: '',
         password: '',
         firstname: '',
-        lastname: ''
+        lastname: '',
     });
     const [formErrors, setFormErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -23,14 +24,13 @@ const Signup = () => {
         const { name, value } = e.target;
         setFormData({
             ...formData,
-            [name]: value
+            [name]: value,
         });
 
-        // Clear error when user types
         if (formErrors[name]) {
             setFormErrors({
                 ...formErrors,
-                [name]: ''
+                [name]: '',
             });
         }
     };
@@ -64,12 +64,9 @@ const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validate form
         const errors = validateForm();
         if (Object.keys(errors).length > 0) {
             setFormErrors(errors);
-
-            // Show first validation error as toast
             const firstError = Object.values(errors)[0];
             toast.error(firstError);
             return;
@@ -81,10 +78,8 @@ const Signup = () => {
             const result = await register(formData);
 
             if (result.success) {
-                // Success is already handled by toast in auth context
                 navigate('/app/dashboard');
             } else {
-                // Show error toast
                 toast.error(result.message);
                 setFormErrors({ general: result.message });
             }
@@ -97,125 +92,225 @@ const Signup = () => {
         }
     };
 
+    // Animation variants for the container
+    const containerVariants = {
+        hidden: { opacity: 0, y: 50 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.1,
+                when: 'beforeChildren',
+                staggerChildren: 0.2,
+            },
+        },
+    };
+
+    // Animation variants for form elements
+    const childVariants = {
+        hidden: { opacity: 0, x: -20 },
+        visible: {
+            opacity: 1,
+            x: 0,
+            transition: { duration: 0.3 },
+        },
+    };
+
+
     return (
-        <div className={`min-h-screen flex items-center justify-center p-4 ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'}`}>
-            <div className={`max-w-md w-full p-8 rounded-lg shadow-lg ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
-                <div className="text-center mb-8">
-                    <h1 className={`text-3xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
-                        <FaUserPlus className="inline-block mr-2 mb-1" />
+        <div
+            className={`min-h-screen flex items-center justify-center p-4 relative overflow-hidden ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'
+                }`}
+        >
+            {/* Background Particles for AI Effect */}
+            {theme === 'dark' || 'light' &&
+                Array.from({ length: 20 }).map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="absolute bg-green-500  rounded-full"
+                        style={{
+                            width: `${Math.random() * 10 + 5}px`,
+                            height: `${Math.random() * 10 + 5}px`,
+                            left: `${Math.random() * 100}%`,
+                            top: `${Math.random() * 100}%`,
+                        }}
+                        animate={{
+                            y: [0, -30, 0],
+                            opacity: [0, 0.8, 0],
+                            scale: [0.7, 1, 0.7],
+                        }}
+                        transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            delay: i * 0.3,
+                            ease: 'easeInOut',
+                        }}
+                    />
+                ))}
+
+            <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className={`max-w-md w-full p-8 rounded-xl shadow-2xl relative z-10 backdrop-blur-md ${theme === 'dark' ? 'bg-gray-800/80' : 'bg-white'
+                    }`}
+            >
+                <motion.div variants={childVariants} className="text-center mb-8">
+                    <h1
+                        className={`text-3xl font-bold flex items-center justify-center ${theme === 'dark' ? 'text-white' : 'text-gray-800'
+                            }`}
+                    >
+                        <FaUserPlus className="mr-2 text-purple-500" />
                         Sign Up
                     </h1>
-                    <p className={`mt-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                    <p
+                        className={`mt-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
+                            }`}
+                    >
                         Create an account to start creating quizzes
                     </p>
-                </div>
-
-                {/* Error messages are now shown as toast notifications */}
+                </motion.div>
 
                 <form onSubmit={handleSubmit}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
+                        <motion.div variants={childVariants}>
                             <label
                                 htmlFor="firstname"
-                                className={`block mb-2 font-medium ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}`}
+                                className={`block mb-2 font-medium flex items-center ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
+                                    }`}
                             >
-                                <FaUser className="inline-block mr-2 mb-1" />
+                                <FaUser className="mr-2 text-blue-500" />
                                 First Name
                             </label>
-                            <input
+                            <motion.input
                                 type="text"
                                 id="firstname"
                                 name="firstname"
                                 value={formData.firstname}
                                 onChange={handleChange}
-                                className={`w-full px-4 py-2 rounded-lg border ${formErrors.firstname ? 'border-red-500' : theme === 'dark' ? 'border-gray-600 bg-gray-700 text-white' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-primary-light`}
+                                className={`w-full px-4 py-2 rounded-lg border ${formErrors.firstname
+                                        ? 'border-red-500'
+                                        : theme === 'dark'
+                                            ? 'border-gray-600 bg-gray-700 text-white'
+                                            : 'border-gray-300'
+                                    } focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300`}
                                 placeholder="First name"
+                                whileFocus={{ scale: 1.02 }}
                             />
-                            {/* Firstname error is now shown as toast */}
-                        </div>
+                        </motion.div>
 
-                        <div>
+                        <motion.div variants={childVariants}>
                             <label
                                 htmlFor="lastname"
-                                className={`block mb-2 font-medium ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}`}
+                                className={`block mb-2 font-medium flex items-center ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
+                                    }`}
                             >
-                                <FaUser className="inline-block mr-2 mb-1" />
+                                <FaUser className="mr-2 text-blue-500" />
                                 Last Name
                             </label>
-                            <input
+                            <motion.input
                                 type="text"
                                 id="lastname"
                                 name="lastname"
                                 value={formData.lastname}
                                 onChange={handleChange}
-                                className={`w-full px-4 py-2 rounded-lg border ${formErrors.lastname ? 'border-red-500' : theme === 'dark' ? 'border-gray-600 bg-gray-700 text-white' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-primary-light`}
+                                className={`w-full px-4 py-2 rounded-lg border ${formErrors.lastname
+                                        ? 'border-red-500'
+                                        : theme === 'dark'
+                                            ? 'border-gray-600 bg-gray-700 text-white'
+                                            : 'border-gray-300'
+                                    } focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300`}
                                 placeholder="Last name"
+                                whileFocus={{ scale: 1.02 }}
                             />
-                            {/* Lastname error is now shown as toast */}
-                        </div>
+                        </motion.div>
                     </div>
 
-                    <div className="mb-4">
+                    <motion.div variants={childVariants} className="mb-4">
                         <label
                             htmlFor="username"
-                            className={`block mb-2 font-medium ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}`}
+                            className={`block mb-2 font-medium flex items-center ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
+                                }`}
                         >
-                            <FaEnvelope className="inline-block mr-2 mb-1" />
+                            <FaEnvelope className="mr-2 text-pink-500" />
                             Email
                         </label>
-                        <input
+                        <motion.input
                             type="email"
                             id="username"
                             name="username"
                             value={formData.username}
                             onChange={handleChange}
-                            className={`w-full px-4 py-2 rounded-lg border ${formErrors.username ? 'border-red-500' : theme === 'dark' ? 'border-gray-600 bg-gray-700 text-white' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-primary-light`}
+                            className={`w-full px-4 py-2 rounded-lg border ${formErrors.username
+                                    ? 'border-red-500'
+                                    : theme === 'dark'
+                                        ? 'border-gray-600 bg-gray-700 text-white'
+                                        : 'border-gray-300'
+                                } focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300`}
                             placeholder="Enter your email"
+                            whileFocus={{ scale: 1.02 }}
                         />
-                        {/* Username error is now shown as toast */}
-                    </div>
+                    </motion.div>
 
-                    <div className="mb-6">
+                    <motion.div variants={childVariants} className="mb-6">
                         <label
                             htmlFor="password"
-                            className={`block mb-2 font-medium ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}`}
+                            className={`block mb-2 font-medium flex items-center ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
+                                }`}
                         >
-                            <FaLock className="inline-block mr-2 mb-1" />
+                            <FaLock className="mr-2 text-pink-500" />
                             Password
                         </label>
-                        <input
+                        <motion.input
                             type="password"
                             id="password"
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
-                            className={`w-full px-4 py-2 rounded-lg border ${formErrors.password ? 'border-red-500' : theme === 'dark' ? 'border-gray-600 bg-gray-700 text-white' : 'border-gray-300'} focus:outline-none focus:ring-2 focus:ring-primary-light`}
+                            className={`w-full px-4 py-2 rounded-lg border ${formErrors.password
+                                    ? 'border-red-500'
+                                    : theme === 'dark'
+                                        ? 'border-gray-600 bg-gray-700 text-white'
+                                        : 'border-gray-300'
+                                } focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300`}
                             placeholder="Create a password"
+                            whileFocus={{ scale: 1.02 }}
                         />
-                        {/* Password error is now shown as toast */}
-                    </div>
+                    </motion.div>
 
-                    <button
+                    <motion.button
                         type="submit"
                         disabled={isSubmitting}
-                        className={`w-full py-3 px-4 rounded-lg font-medium text-white ${isSubmitting ? 'bg-gray-500 cursor-not-allowed' : theme === 'dark' ? 'bg-primary-dark hover:bg-indigo-600' : 'bg-primary-light hover:bg-indigo-700'} transition-colors duration-300`}
+                        variants={childVariants}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className={`w-full py-3 px-4 rounded-lg font-medium text-white ${isSubmitting
+                                ? 'bg-gray-500 cursor-not-allowed'
+                                : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700'
+                            } transition-colors duration-300 shadow-lg`}
                     >
                         {isSubmitting ? 'Creating Account...' : 'Create Account'}
-                    </button>
+                    </motion.button>
                 </form>
 
-                <div className="mt-6 text-center">
+                <motion.div
+                    variants={childVariants}
+                    className="mt-6 text-center"
+                >
                     <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}>
                         Already have an account?{' '}
                         <Link
                             to="/login"
-                            className={`font-medium ${theme === 'dark' ? 'text-primary-dark hover:text-indigo-400' : 'text-primary-light hover:text-indigo-700'}`}
+                            className={`font-medium ${theme === 'dark'
+                                    ? 'text-purple-400 hover:text-purple-300'
+                                    : 'text-blue-600 hover:text-blue-700'
+                                } transition-colors duration-300`}
                         >
                             Login
                         </Link>
                     </p>
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
         </div>
     );
 };
