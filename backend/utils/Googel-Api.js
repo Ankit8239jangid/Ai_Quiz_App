@@ -59,32 +59,7 @@ Expected response format:
   const response = await result.response;
   const text = response.text();
 
-  console.log(text);
   return text;
 }
 
-// IMAGE + TEXT (Vision)
-async function generateImageResponse(imagePath, prompt) {
-  const model = ai.getGenerativeModel({ model: "gemini-1.5-pro-vision" });
-
-  const imageBuffer = fs.readFileSync(imagePath);
-  const base64Image = imageBuffer.toString("base64");
-
-  const result = await model.generateContent([
-    {
-      inlineData: {
-        mimeType: "image/png", // or "image/jpeg"
-        data: base64Image,
-      },
-    },
-    { text: prompt },
-  ]);
-
-  const response = await result.response;
-  const text = response.text();
-
-  console.log(text);
-  return text;
-}
-
-export { generateTextResponse, generateImageResponse };
+export { generateTextResponse, };

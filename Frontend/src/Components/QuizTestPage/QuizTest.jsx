@@ -15,7 +15,7 @@ function QuizTest() {
 
   const { Selectquizze, isLoading, FetchApi, theme } = useAppContext();
   const { isAuthenticated } = useAuth();
-  console.log(Selectquizze);
+ 
 
   const [userAnswers, setUserAnswers] = useState([]);
   const [timeLeft, setTimeLeft] = useState(0);
