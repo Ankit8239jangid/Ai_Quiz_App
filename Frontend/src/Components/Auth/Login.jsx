@@ -172,7 +172,7 @@ const Login = () => {
           <motion.div variants={childVariants} className="mb-4">
             <label
               htmlFor="username"
-              className={`block mb-2 font-medium flex items-center ${
+              className={` mb-2 font-medium flex items-center ${
                 theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
               }`}
             >
@@ -200,7 +200,7 @@ const Login = () => {
           <motion.div variants={childVariants} className="mb-6">
             <label
               htmlFor="password"
-              className={`block mb-2 font-medium flex items-center ${
+              className={` mb-2 font-medium flex items-center ${
                 theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
               }`}
             >

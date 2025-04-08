@@ -176,7 +176,7 @@ const Signup = () => {
                         <motion.div variants={childVariants}>
                             <label
                                 htmlFor="firstname"
-                                className={`block mb-2 font-medium flex items-center ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
+                                className={` mb-2 font-medium flex items-center ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
                                     }`}
                             >
                                 <FaUser className="mr-2 text-blue-500" />
@@ -202,7 +202,7 @@ const Signup = () => {
                         <motion.div variants={childVariants}>
                             <label
                                 htmlFor="lastname"
-                                className={`block mb-2 font-medium flex items-center ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
+                                className={` mb-2 font-medium flex items-center ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
                                     }`}
                             >
                                 <FaUser className="mr-2 text-blue-500" />
@@ -229,7 +229,7 @@ const Signup = () => {
                     <motion.div variants={childVariants} className="mb-4">
                         <label
                             htmlFor="username"
-                            className={`block mb-2 font-medium flex items-center ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
+                            className={` mb-2 font-medium flex items-center ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
                                 }`}
                         >
                             <FaEnvelope className="mr-2 text-pink-500" />
@@ -255,7 +255,7 @@ const Signup = () => {
                     <motion.div variants={childVariants} className="mb-6">
                         <label
                             htmlFor="password"
-                            className={`block mb-2 font-medium flex items-center ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
+                            className={` mb-2 font-medium flex items-center ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'
                                 }`}
                         >
                             <FaLock className="mr-2 text-pink-500" />
