@@ -7,10 +7,10 @@ import logo from '/logo.png';
 import NotFound from '/NotFound.svg';
 
 
-function Home() {
 
-    const {quizzes, search, selectedField, isLoading, theme } = useAppContext();
- 
+function Home() {
+    const { quizzes, search, selectedField, isLoading, theme } = useAppContext();
+   
     // Filter quizzes based on search and field
     const filteredQuizzes = quizzes.filter(quiz => {
         const matchesSearch = quiz.title.toLowerCase().includes(search.toLowerCase());
@@ -18,7 +18,8 @@ function Home() {
         return matchesSearch && matchesField;
     });
 
-   
+
+ 
     return (
         <div className={`min-h-screen p-4  ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'}`}>
             <div className="max-w-7xl mx-auto">
@@ -30,7 +31,7 @@ function Home() {
                     <FaLightbulb className={`text-2xl md:text-3xl ${theme === 'dark' ? 'text-yellow-300' : 'text-yellow-500'}`} />
                 </header>
 
-                <QuizFilter /> 
+                <QuizFilter />
 
                 <main className="mt-8">
                     {isLoading ? (

@@ -43,26 +43,50 @@ export const AppProvider = ({ children }) => {
         setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
     };
 
- // Fetch all quizzes from the backend
-    useEffect(() => {
-        (async () => {
-            try {
-                setIsLoading(true);
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/quiz/all_quiz`);
+    // State to track last refresh time
+    const [lastRefreshTime, setLastRefreshTime] = useState(new Date());
 
-                // Sort quizzes by creation date (newest first)
-                const sortedQuizzes = response.data.quizzes.sort((a, b) => {
-                    return new Date(b.createdAt) - new Date(a.createdAt);
-                });
+    // Function to fetch all quizzes from the backend
+    const fetchAllQuizzes = async (forceRefresh = false) => {
+        try {
+            // Check if we need to refresh based on time (5 minutes cache)
+            const now = new Date();
+            const cacheTime = 5 * 60 * 1000; // 5 minutes in milliseconds
 
-                setQuizzes(sortedQuizzes);
-            } catch (error) {
-                console.error("Error fetching quizzes:", error);
-            } finally {
-                setIsLoading(false);
+            if (!forceRefresh && lastRefreshTime && (now - lastRefreshTime < cacheTime)) {
+             
+                return; // Use cached data
             }
-        })();
-    }, []);
+
+            setIsLoading(true);
+           
+
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/quiz/all_quiz`);
+
+            // Sort quizzes by creation date (newest first)
+            const sortedQuizzes = response.data.quizzes.sort((a, b) => {
+                return new Date(b.createdAt) - new Date(a.createdAt);
+            });
+
+            setQuizzes(sortedQuizzes);
+            setLastRefreshTime(new Date());
+            console.log('Quiz data refreshed at:', new Date().toLocaleTimeString());
+        } catch (error) {
+            console.error("Error fetching quizzes:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Fetch quizzes on initial load and when route changes
+    useEffect(() => {
+        fetchAllQuizzes();
+
+        // This will run when the component unmounts
+        return () => {
+            console.log('Cleaning up quiz data fetch');
+        };
+    }, [window.location.pathname]);
 
     // Fetch a single quiz by ID
 
@@ -114,6 +138,8 @@ export const AppProvider = ({ children }) => {
         setUserAnswers,
         FetchApi,
         Selectquizze,
+        fetchAllQuizzes,  // Expose the refresh function
+        lastRefreshTime,  // Expose the last refresh time
         setSelectQuizze,
         setIsLoading,
         theme,

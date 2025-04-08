@@ -1,11 +1,26 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useAppContext } from '../../context/app.context';
 import { FaSearch, FaTimes, FaFilter } from 'react-icons/fa';
 import { TbRefresh } from 'react-icons/tb';
+import { useLocation } from 'react-router-dom';
 
 function QuizFilter() {
-    const { quizzes = [], search = '', setSearch, selectedField = 'All', setSelectedField, theme } = useAppContext();
+    const { quizzes = [], search = '', setSearch, selectedField = 'All', setSelectedField, theme, fetchAllQuizzes, isLoading } = useAppContext();
 
+    const [refreshing, setRefreshing] = useState(false);
+    const location = useLocation();
+
+    // Refresh data when component mounts or route changes
+    useEffect(() => {
+        fetchAllQuizzes();
+    }, [location.pathname]);
+
+    // Function to manually refresh quiz data
+    const handleRefresh = async () => {
+        setRefreshing(true);
+        await fetchAllQuizzes(true); // Force refresh
+        setRefreshing(false);
+    };
     // Memoize unique fields to avoid recomputing on every render
     const fields = useMemo(() => {
         const uniqueFields = new Set((quizzes || []).map(quiz => quiz.field || 'General'));
@@ -31,7 +46,7 @@ function QuizFilter() {
                         </span>
                         <input
                             id="quiz-search"
-                           
+
                             type="text"
                             placeholder="Search quizzes..."
                             value={search}
@@ -81,14 +96,16 @@ function QuizFilter() {
                     </select>
                     {/* Custom dropdown arrow */}
                     <span className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                        <FaFilter className={`w-4 h-4 ${theme === 'dark' ?  'text-gray-400' : 'text-gray-500'}`} />
+                        <FaFilter className={`w-4 h-4 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
                     </span>
                 </div>
 
                 {/* refresh button */}
                 <div className="relative w-full sm:w-40">
                     <button
-                        onClick={() => window.location.reload()}
+                        onClick={handleRefresh}
+                        disabled={refreshing || isLoading}
+                        title="Refresh quizzes"
                         className={`w-28 px-3 py-3 rounded-xl flex items-center jsustify-cente gap-4
                         focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
                         transition-all duration-300 ease-in-out
@@ -97,7 +114,7 @@ function QuizFilter() {
                                 'bg-white border border-gray-300 text-gray-800 hover:border-indigo-300'}`}
                         aria-label="Filter by field"
                     >
-                        Refresh  <TbRefresh  className={`w-4 h-4 font-bold animate-spin  ${theme === 'dark' ?  'text-gray-400' : 'text-gray-500'}`} />
+                        Refresh  <TbRefresh className={`w-4 h-4 font-bold animate-spin  ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
                     </button>
 
                 </div>
