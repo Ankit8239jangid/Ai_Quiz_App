@@ -1,4 +1,4 @@
-# Quiz Application
+# Quiz Application [Live preview](https://ai-quiz-by-ankit.vercel.app/)
 
 A full-stack quiz application with AI-generated quizzes, user authentication, and a modern UI with dark mode support.
 
