@@ -113,14 +113,23 @@ const Dashboard = () => {
                             Welcome back, {currentUser?.firstname || 'User'}!
                         </p>
                     </div>
+                    <div className=" flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 w-full md:w-auto">
 
-                    <button
-                        onClick={() => navigate('/app/create-quiz')}
-                        className={`mt-4 md:mt-0 px-4 py-2 rounded-lg flex items-center ${theme === 'dark' ? 'bg-primary-dark hover:bg-indigo-600' : 'bg-primary-light hover:bg-indigo-700'} text-white transition-colors duration-300 w-full md:w-auto`}
-                    >
-                        <FaPlus className="mr-2" />
-                        Create New Quiz
-                    </button>
+                        <button
+                            onClick={() => navigate('/app/generate-quiz')}
+                            className={`mt-4 md:mt-0 px-4 py-2 rounded-lg flex items-center ${theme === 'dark' ? 'bg-primary-dark hover:bg-indigo-600' : 'bg-primary-light hover:bg-indigo-700'} text-white transition-colors duration-300 w-full md:w-auto`}
+                        >
+                            <FaPlus className="mr-2" />
+                            Create Quiz by Ai
+                        </button>
+                        <button
+                            onClick={() => navigate('/app/create-quiz')}
+                            className={`mt-4 md:mt-0 px-4 py-2 rounded-lg flex items-center ${theme === 'dark' ? 'bg-primary-dark hover:bg-indigo-600' : 'bg-primary-light hover:bg-indigo-700'} text-white transition-colors duration-300 w-full md:w-auto`}
+                        >
+                            <FaPlus className="mr-2" />
+                            Create New Quiz
+                        </button>
+                    </div>
                 </div>
 
                 {/* Stats Cards */}
