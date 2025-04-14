@@ -1,5 +1,31 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import axios from 'axios';
+
+// Create a custom axios instance with caching
+const api = axios.create({
+    baseURL: import.meta.env.VITE_BACKEND_URL,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
+// Add request interceptor to include auth token
+api.interceptors.request.use(config => {
+    const token = localStorage.getItem('token');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+
+// Simple in-memory cache
+const cache = {
+    data: new Map(),
+    timestamp: new Map(),
+};
+
+// Cache duration in milliseconds (5 minutes)
+const CACHE_DURATION = 5 * 60 * 1000;
 
 // Create the context
 const AppContext = createContext();
@@ -43,34 +69,77 @@ export const AppProvider = ({ children }) => {
         setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
     };
 
- // Fetch all quizzes from the backend
-    useEffect(() => {
-        (async () => {
-            try {
-                setIsLoading(true);
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/quiz/all_quiz`);
+    // Function to fetch all quizzes from the backend with caching
+    const fetchAllQuizzes = useCallback(async (forceRefresh = false) => {
+        const cacheKey = 'all_quizzes';
+        const now = new Date();
 
-                // Sort quizzes by creation date (newest first)
-                const sortedQuizzes = response.data.quizzes.sort((a, b) => {
-                    return new Date(b.createdAt) - new Date(a.createdAt);
-                });
+        try {
+            // Check if we have valid cached data
+            if (!forceRefresh &&
+                cache.data.has(cacheKey) &&
+                cache.timestamp.has(cacheKey) &&
+                (now - cache.timestamp.get(cacheKey)) < CACHE_DURATION) {
 
-                setQuizzes(sortedQuizzes);
-            } catch (error) {
-                console.error("Error fetching quizzes:", error);
-            } finally {
-                setIsLoading(false);
+                console.log('Using cached quiz data, last refreshed at:',
+                    new Date(cache.timestamp.get(cacheKey)).toLocaleTimeString());
+
+                // Use cached data
+                setQuizzes(cache.data.get(cacheKey));
+                return;
             }
-        })();
+
+            setIsLoading(true);
+            console.log('Fetching fresh quiz data...');
+
+            const response = await api.get('/quiz/all_quiz');
+
+            // Sort quizzes by creation date (newest first)
+            const sortedQuizzes = response.data.quizzes.sort((a, b) => {
+                return new Date(b.createdAt) - new Date(a.createdAt);
+            });
+
+            // Update cache
+            cache.data.set(cacheKey, sortedQuizzes);
+            cache.timestamp.set(cacheKey, now.getTime());
+
+            setQuizzes(sortedQuizzes);
+            console.log('Quiz data refreshed at:', now.toLocaleTimeString());
+        } catch (error) {
+            console.error("Error fetching quizzes:", error);
+        } finally {
+            setIsLoading(false);
+        }
     }, []);
 
-    // Fetch a single quiz by ID
+    // Fetch quizzes on initial load
+    useEffect(() => {
+        fetchAllQuizzes();
+    }, [fetchAllQuizzes]);
 
-    const FetchApi = (id) => {
+    // Fetch a single quiz by ID with caching
+    const FetchApi = useCallback((id) => {
         (async () => {
+            const cacheKey = `quiz_${id}`;
+            const now = new Date();
+
             try {
+                // Check if we have valid cached data for this quiz
+                if (cache.data.has(cacheKey) &&
+                    cache.timestamp.has(cacheKey) &&
+                    (now - cache.timestamp.get(cacheKey)) < CACHE_DURATION) {
+
+                    console.log(`Using cached data for quiz ${id}`);
+                    setSelectQuizze(cache.data.get(cacheKey));
+                    return;
+                }
+
                 setIsLoading(true);
-                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/quiz/${id}`);
+                const response = await api.get(`/quiz/${id}`);
+
+                // Update cache
+                cache.data.set(cacheKey, response.data.quiz);
+                cache.timestamp.set(cacheKey, now.getTime());
 
                 setSelectQuizze(response.data.quiz);
             } catch (error) {
@@ -80,7 +149,7 @@ export const AppProvider = ({ children }) => {
                 setIsLoading(false);
             }
         })();
-    }
+    }, [])
 
     // Fetch common fields from the backend
     useEffect(() => {
@@ -98,7 +167,8 @@ export const AppProvider = ({ children }) => {
 
 
 
-    const value = {
+    // Memoize the context value to prevent unnecessary re-renders
+    const value = useMemo(() => ({
         isSidebarOpen,
         isLoading,
         search,
@@ -119,9 +189,22 @@ export const AppProvider = ({ children }) => {
         theme,
         toggleTheme,
         commonFields,
-        setCommonFields
-
-    };
+        setCommonFields,
+        fetchAllQuizzes // Add the optimized fetch function
+    }), [
+        isSidebarOpen,
+        isLoading,
+        search,
+        selectedField,
+        quizzes,
+        score,
+        userAnswers,
+        FetchApi,
+        Selectquizze,
+        theme,
+        commonFields,
+        fetchAllQuizzes
+    ]);
 
     return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

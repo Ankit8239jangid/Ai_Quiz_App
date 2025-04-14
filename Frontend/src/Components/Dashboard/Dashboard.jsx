@@ -60,7 +60,7 @@ const Dashboard = () => {
         };
 
         fetchDashboardData();
-    }, [isAuthenticated, navigate]);
+    }, [isAuthenticated]);
 
     const handleDeleteQuiz = async (quizId) => {
         setDeleteConfirmation(quizId);
