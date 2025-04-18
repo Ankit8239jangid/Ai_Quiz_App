@@ -22,7 +22,7 @@ const Dashboard = () => {
     useEffect(() => {
         // Redirect if not authenticated
         if (!isAuthenticated()) {
-            navigate('/login');
+            navigate('/');
             return;
         }
 
@@ -185,7 +185,7 @@ const Dashboard = () => {
                             <p className="text-center">You haven't attempted any quizzes yet.</p>
                             <div className="text-center mt-4">
                                 <button
-                                    onClick={() => navigate('/app/quizes')}
+                                    onClick={() => navigate('/app/quizzes')}
                                     className={`px-4 py-2 rounded-lg ${theme === 'dark' ? 'bg-primary-dark hover:bg-indigo-600' : 'bg-primary-light hover:bg-indigo-700'} text-white transition-colors duration-300 w-full`}
                                 >
                                     Browse Quizzes
