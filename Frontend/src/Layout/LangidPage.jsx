@@ -90,7 +90,7 @@ function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="min-h-screen flex flex-col items-center justify-center text-center relative px-4 pt-20 md:pt-24 z-10">
+      <section className="min-h-screen flex flex-col items-center justify-center text-center relative px-4 pt-0 md:pt-24 z-10">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -207,7 +207,7 @@ function LandingPage() {
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
         {/* Line 1 */}
         <motion.div
-          className="absolute top-[80vh] w-full h-[2px] bg-gradient-to-r from-transparent via-blue-500 to-transparent "
+          className="absolute top-[61vh] md:top-[80vh] w-full h-[2px] bg-gradient-to-r from-transparent via-blue-500 to-transparent "
           initial={{ x: '-100%' }}
           animate={{ x: '50%' }}
           transition={{
@@ -219,7 +219,7 @@ function LandingPage() {
 
         {/* Line 2 */}
         <motion.div
-          className="absolute top-[80vh] w-1/2 h-[2px] bg-gradient-to-r from-transparent via-blue-500 to-transparent "
+          className="absolute top-[61vh] md:top-[80vh] w-1/2 h-[2px] bg-gradient-to-r from-transparent via-blue-500 to-transparent "
           initial={{ x: '52%' }}
           animate={{ x: '100%', opacity: [0, 1, 0] }}
           transition={{

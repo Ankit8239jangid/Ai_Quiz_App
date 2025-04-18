@@ -90,7 +90,6 @@ export const AppProvider = ({ children }) => {
             }
 
             setIsLoading(true);
-            console.log('Fetching fresh quiz data...');
 
             const response = await api.get('/quiz/all_quiz');
 
@@ -104,7 +103,7 @@ export const AppProvider = ({ children }) => {
             cache.timestamp.set(cacheKey, now.getTime());
 
             setQuizzes(sortedQuizzes);
-            console.log('Quiz data refreshed at:', now.toLocaleTimeString());
+
         } catch (error) {
             console.error("Error fetching quizzes:", error);
         } finally {
@@ -115,7 +114,7 @@ export const AppProvider = ({ children }) => {
     // Fetch quizzes on initial load
     useEffect(() => {
         fetchAllQuizzes();
-    }, [fetchAllQuizzes]);
+    }, [fetchAllQuizzes]); // Include fetchAllQuizzes in the dependency array
 
     // Fetch a single quiz by ID with caching
     const FetchApi = useCallback((id) => {

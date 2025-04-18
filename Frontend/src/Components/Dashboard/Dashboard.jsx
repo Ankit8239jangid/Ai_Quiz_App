@@ -2,22 +2,56 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/auth.context';
 import { useAppContext } from '../../context/app.context';
-import axios from 'axios';
-import { FaChartBar, FaCheckCircle, FaClipboardList, FaPlus, FaHistory, FaTrash } from 'react-icons/fa';
+import { useDashboard } from '../../context/dashboard.context';
+import { FaChartBar, FaCheckCircle, FaClipboardList, FaPlus, FaHistory, FaTrash, FaSync, FaRobot, FaSpinner } from 'react-icons/fa';
 import DashboardShimmer from './Loding';
-import toast from 'react-hot-toast';
+
 
 const Dashboard = () => {
-    const [stats, setStats] = useState(null);
-    const [myQuizzes, setMyQuizzes] = useState([]);
-    const [recentAttempts, setRecentAttempts] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [deleteConfirmation, setDeleteConfirmation] = useState(null);
-
+    const [deleteConfirmation, setDeleteConfirmation] = useState({ show: false, quizId: null, quizTitle: '' });
+    const [refreshing, setRefreshing] = useState(false);
+    const [Loding, setLoding] = useState(false)
     const { currentUser, isAuthenticated } = useAuth();
     const { theme } = useAppContext();
+    const {
+        stats,
+        myQuizzes,
+        recentAttempts,
+        loading,
+        error,
+        lastFetched,
+        fetchDashboardData,
+        deleteQuiz
+    } = useDashboard();
     const navigate = useNavigate();
+
+    // Add a refresh function
+    const handleRefresh = () => {
+        setRefreshing(true);
+        fetchDashboardData(true).finally(() => {
+            setRefreshing(false);
+        });
+    };
+
+    // Show delete confirmation dialog
+    const showDeleteConfirmation = (quizId, quizTitle) => {
+        setDeleteConfirmation({ show: true, quizId, quizTitle });
+    };
+
+    // Hide delete confirmation dialog
+    const hideDeleteConfirmation = () => {
+        setDeleteConfirmation({ show: false, quizId: null, quizTitle: '' });
+    };
+
+    // Handle quiz deletion
+    const handleDeleteQuiz = async () => {
+        setLoding(true)
+        const success = await deleteQuiz(deleteConfirmation.quizId);
+        if (success) {
+            hideDeleteConfirmation();
+            setLoding(false)
+        }
+    };
 
     useEffect(() => {
         // Redirect if not authenticated
@@ -25,61 +59,9 @@ const Dashboard = () => {
             navigate('/');
             return;
         }
-
-        // Fetch dashboard data
-        const fetchDashboardData = async () => {
-            try {
-                setLoading(true);
-                setError(null);
-
-                // Fetch user stats
-                const statsResponse = await axios.get(
-                    `${import.meta.env.VITE_BACKEND_URL}/progress/stats/summary`
-                );
-
-                // Fetch user's quizzes
-                const quizzesResponse = await axios.get(
-                    `${import.meta.env.VITE_BACKEND_URL}/quiz/my-quizzes`
-                );
-
-                // Fetch user's progress
-                const progressResponse = await axios.get(
-                    `${import.meta.env.VITE_BACKEND_URL}/progress`
-                );
-
-                setStats(statsResponse.data.stats);
-                setMyQuizzes(quizzesResponse.data.quizzes);
-                setRecentAttempts(progressResponse.data.progress.slice(0, 5));
-
-            } catch (error) {
-                console.error('Error fetching dashboard data:', error);
-                setError('Failed to load dashboard data. Please try again.');
-            } finally {
-                setLoading(false);
-            }
-        };
-
+        // Fetch dashboard data only once when component mounts
         fetchDashboardData();
-    }, [isAuthenticated]);
-
-    const handleDeleteQuiz = async (quizId) => {
-        setDeleteConfirmation(quizId);
-    };
-
-    const confirmDeleteQuiz = async () => {
-        if (!deleteConfirmation) return;
-
-        try {
-            await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/quiz/delete/${deleteConfirmation}`);
-            setMyQuizzes(myQuizzes.filter(quiz => quiz._id !== deleteConfirmation));
-            setDeleteConfirmation(null);
-            toast.success('Quiz Delete Successfully')
-        } catch (error) {
-            console.error('Error deleting quiz:', error);
-            setError('Failed to delete quiz. Please try again.');
-            toast.success('Failed to delete quiz. Please try again.')
-        }
-    };
+    }, [isAuthenticated, navigate, fetchDashboardData]);
 
     if (loading) {
         return (
@@ -106,35 +88,52 @@ const Dashboard = () => {
     return (
         <div className={`min-h-screen  p-6 ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-800'}`}>
             <div className="max-w-6xl mx-auto">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 w-full">
-                    <div className="w-full md:w-auto">
-                        <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
+                <div className="flex flex-col md:flex-row justify-between gap-5 items-start md:items-center mb-8 w-full">
+                    <div className=" w-full md:w-auto">
+                        <div className='flex items-center'>
+                            <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
+                            <button
+                                onClick={handleRefresh}
+                                disabled={refreshing}
+                                className={`ml-4 p-2 rounded-full ${theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'} ${refreshing ? 'animate-spin' : ''}`}
+                                title="Refresh dashboard"
+                            >
+                                <FaSync className={theme === 'dark' ? 'text-gray-300' : 'text-gray-600'} />
+                            </button>
+                        </div>
                         <p className={`${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'} w-full`}>
                             Welcome back, {currentUser?.firstname || 'User'}!
                         </p>
-                    </div>
-                    <div className=" flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 w-full md:w-auto">
 
+                    </div>
+                    <div className="w-full flex flex-col gap-4 md:flex-row md:items-center md:justify-end md:gap-4">
                         <button
                             onClick={() => navigate('/app/generate-quiz')}
-                            className={`mt-4 md:mt-0 px-4 py-2 rounded-lg flex items-center ${theme === 'dark' ? 'bg-primary-dark hover:bg-indigo-600' : 'bg-primary-light hover:bg-indigo-700'} text-white transition-colors duration-300 w-full md:w-auto`}
+                            className={`px-4 py-2 rounded-lg flex items-center justify-center text-center ${theme === 'dark'
+                                ? 'bg-primary-dark hover:bg-indigo-600'
+                                : 'bg-primary-light hover:bg-indigo-700'
+                                } text-white transition-colors duration-300 w-full md:w-auto`}
                         >
-                            <FaPlus className="mr-2" />
-                            Create Quiz by Ai
+                            <FaRobot className="mr-2" />
+                            Create Quiz by
                         </button>
                         <button
                             onClick={() => navigate('/app/create-quiz')}
-                            className={`mt-4 md:mt-0 px-4 py-2 rounded-lg flex items-center ${theme === 'dark' ? 'bg-primary-dark hover:bg-indigo-600' : 'bg-primary-light hover:bg-indigo-700'} text-white transition-colors duration-300 w-full md:w-auto`}
+                            className={`px-4 py-2 rounded-lg flex items-center justify-center text-center ${theme === 'dark'
+                                ? 'bg-primary-dark hover:bg-indigo-600'
+                                : 'bg-primary-light hover:bg-indigo-700'
+                                } text-white transition-colors duration-300 w-full md:w-auto`}
                         >
                             <FaPlus className="mr-2" />
                             Create New Quiz
                         </button>
                     </div>
+
                 </div>
 
                 {/* Stats Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div className={`p-6 rounded-lg shadow-md ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} w-full`}>
+                    <div className={`p-6 rounded-lg hover:scale-105 transition-all ease-out shadow-md ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} w-full`}>
                         <div className="flex items-center mb-4">
                             <div className={`p-3 rounded-full ${theme === 'dark' ? 'bg-blue-900 text-blue-300' : 'bg-blue-100 text-blue-600'}`}>
                                 <FaClipboardList className="text-xl" />
@@ -144,7 +143,7 @@ const Dashboard = () => {
                         <p className="text-3xl font-bold">{stats?.totalQuizzes || 0}</p>
                     </div>
 
-                    <div className={`p-6 rounded-lg shadow-md ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} w-full`}>
+                    <div className={`p-6 rounded-lg hover:scale-105 transition-all shadow-md ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} w-full`}>
                         <div className="flex items-center mb-4">
                             <div className={`p-3 rounded-full ${theme === 'dark' ? 'bg-green-900 text-green-300' : 'bg-green-100 text-green-600'}`}>
                                 <FaCheckCircle className="text-xl" />
@@ -154,7 +153,7 @@ const Dashboard = () => {
                         <p className="text-3xl font-bold">{stats?.completedQuizzes || 0}</p>
                     </div>
 
-                    <div className={`p-6 rounded-lg shadow-md ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} w-full`}>
+                    <div className={`p-6 rounded-lg hover:scale-105 transition-all ease-out shadow-md ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} w-full`}>
                         <div className="flex items-center mb-4">
                             <div className={`p-3 rounded-full ${theme === 'dark' ? 'bg-purple-900 text-purple-300' : 'bg-purple-100 text-purple-600'}`}>
                                 <FaChartBar className="text-xl" />
@@ -164,7 +163,7 @@ const Dashboard = () => {
                         <p className="text-3xl font-bold">{stats?.averageScore ? `${Math.round(stats.averageScore)}%` : '0%'}</p>
                     </div>
 
-                    <div className={`p-6 rounded-lg shadow-md ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} w-full`}>
+                    <div className={`p-6 rounded-lg hover:scale-105 transition-all ease-out shadow-md ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} w-full`}>
                         <div className="flex items-center mb-4">
                             <div className={`p-3 rounded-full ${theme === 'dark' ? 'bg-yellow-900 text-yellow-300' : 'bg-yellow-100 text-yellow-600'}`}>
                                 <FaHistory className="text-xl" />
@@ -177,7 +176,7 @@ const Dashboard = () => {
 
 
                 {/* Recent Attempts */}
-                <div className={`p-6 rounded-lg shadow-md ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} w-full`}>
+                <div className={`p-6 rounded-lg  ease-out shadow-md ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} w-full`}>
                     <h2 className="text-xl font-bold mb-4">Recent Quiz Attempts</h2>
 
                     {recentAttempts.length === 0 ? (
@@ -244,7 +243,7 @@ const Dashboard = () => {
                 </div>
 
                 {/* My Quizzes */}
-                <div className={`p-6 rounded-lg shadow-md mb-8 mt-10 ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} w-full`}>
+                <div className={`p-6 rounded-lg  ease-out shadow-md mb-8 mt-10 ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} w-full`}>
                     <h2 className="text-xl font-bold mb-4">My Quizzes</h2>
 
                     {myQuizzes.length === 0 ? (
@@ -296,7 +295,7 @@ const Dashboard = () => {
                                                         View
                                                     </button>
                                                     <button
-                                                        onClick={() => handleDeleteQuiz(quiz._id)}
+                                                        onClick={() => showDeleteConfirmation(quiz._id, quiz.title)}
                                                         className={`px-3  flex items-center justify-center py-2 rounded ${theme === 'dark' ? 'bg-red-900 hover:bg-red-800 text-red-200' : 'bg-red-100 hover:bg-red-200 text-red-700'} w-full`}
                                                     >
                                                         <FaTrash />
@@ -312,24 +311,26 @@ const Dashboard = () => {
                 </div>
 
                 {/* Delete Confirmation Modal */}
-                {deleteConfirmation && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                        <div className={`p-6 rounded-lg ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} w-full max-w-md`}>
+                {deleteConfirmation.show && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                        <div className={`p-6 rounded-lg hover:scale-105 transition-all ease-out ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} w-full max-w-md`}>
                             <h3 className="text-xl font-bold mb-4">Confirm Delete</h3>
-                            <p>Are you sure you want to delete this quiz?</p>
+                            <p>Are you sure you want to delete <strong>{deleteConfirmation.quizTitle}</strong>?</p>
                             <div className="mt-4 flex justify-end space-x-2">
                                 <button
-                                    onClick={() => setDeleteConfirmation(null)}
-                                    className={`px-4 py-2 rounded ${theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'} w-full`}
+                                    onClick={hideDeleteConfirmation}
+                                    className={` px-4 py-2 rounded active:scale-50 transition-all  ${theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'} w-full`}
                                 >
                                     Cancel
                                 </button>
                                 <button
-                                    onClick={confirmDeleteQuiz}
-                                    className={`px-4 py-2 rounded ${theme === 'dark' ? 'bg-red-700 hover:bg-red-600' : 'bg-red-500 hover:bg-red-600'} text-white w-full`}
+                                    onClick={handleDeleteQuiz}
+                                    className={` px-4 py-2 rounded text-center  active:scale-50 transition-all  ${theme === 'dark' ? 'bg-red-700 hover:bg-red-600' : 'bg-red-500 hover:bg-red-600'} text-white w-full`}
                                 >
-                                    Delete
+                                    {Loding ? <FaSpinner className="animate-spin ml-20" /> : 'Delete'}
                                 </button>
+
+
                             </div>
                         </div>
                     </div>
