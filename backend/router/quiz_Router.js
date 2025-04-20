@@ -378,10 +378,10 @@ quizRoute.get("/fields", async (req, res) => {
 
 
 //Add a get route to fetch a quiz by ID (without answers for regular users)
-quizRoute.get("/:id", async (req, res) => {
+quizRoute.get("/:id", verifyToken, async (req, res) => {
     const { id } = req.params;
     try {
-        const quiz = await Quiz.findById(id).select('-questions.correctAnswer');
+        const quiz = await Quiz.findById(id);
         if (!quiz) {
             return res.status(404).json({
                 success: false,

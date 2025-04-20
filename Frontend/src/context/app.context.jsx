@@ -81,9 +81,6 @@ export const AppProvider = ({ children }) => {
                 cache.timestamp.has(cacheKey) &&
                 (now - cache.timestamp.get(cacheKey)) < CACHE_DURATION) {
 
-                console.log('Using cached quiz data, last refreshed at:',
-                    new Date(cache.timestamp.get(cacheKey)).toLocaleTimeString());
-
                 // Use cached data
                 setQuizzes(cache.data.get(cacheKey));
                 return;
@@ -128,7 +125,6 @@ export const AppProvider = ({ children }) => {
                     cache.timestamp.has(cacheKey) &&
                     (now - cache.timestamp.get(cacheKey)) < CACHE_DURATION) {
 
-                    console.log(`Using cached data for quiz ${id}`);
                     setSelectQuizze(cache.data.get(cacheKey));
                     return;
                 }
@@ -141,6 +137,7 @@ export const AppProvider = ({ children }) => {
                 cache.timestamp.set(cacheKey, now.getTime());
 
                 setSelectQuizze(response.data.quiz);
+
             } catch (error) {
                 console.error("Error fetching quiz:", error);
                 setSelectQuizze(null);
