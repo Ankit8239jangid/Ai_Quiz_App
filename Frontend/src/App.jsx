@@ -2,6 +2,8 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { useAuth } from './context/auth.context';
 import errorImage from '/404error.svg';
+import NotFoundPage from './Layout/NotFound';
+import NotFound from './Layout/NotFound';
 
 // Lazy load all components for better performance
 const Layout = lazy(() => import('./Layout/Layout'));
@@ -129,9 +131,9 @@ export default function App() {
           <Route
             path="*"
             element={
-              <div className="flex justify-center items-center min-h-screen">
-                <img src={errorImage} alt="404 Not Found" className="w-[600px]" />
-              </div>
+
+              <NotFound />
+
             }
           />
         </Routes>
