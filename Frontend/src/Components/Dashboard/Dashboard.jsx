@@ -251,7 +251,7 @@ const Dashboard = () => {
                             <p className="text-center">You haven't created any quizzes yet.</p>
                             <div className="text-center mt-4">
                                 <button
-                                    onClick={() => navigate('/create-quiz')}
+                                    onClick={() => navigate('/app/create-quiz')}
                                     className={`px-4 py-2 rounded-lg ${theme === 'dark' ? 'bg-primary-dark hover:bg-indigo-600' : 'bg-primary-light hover:bg-indigo-700'} text-white transition-colors duration-300 w-full`}
                                 >
                                     Create Your First Quiz
