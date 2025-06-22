@@ -81,13 +81,7 @@ const AIQuizGenerator = () => {
             }
         } catch (error) {
             console.error('Error generating quiz:', error);
-<<<<<<< HEAD
             toast.error('Rate limit exceeded: free-models-per-day' || 'Failed to generate quiz');
-=======
-            setError(true)
-            // toast.error(error.response?.data?.message || 'Failed to generate quiz');
-             toast.error(' API free limit over 😥');
->>>>>>> 2cf62c15a70357d3dbfaf8b2bb49558e1a2b6546
         } finally {
             setLoading(false);
         }
