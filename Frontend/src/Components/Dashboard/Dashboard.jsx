@@ -115,7 +115,7 @@ const Dashboard = () => {
                                 } text-white transition-colors duration-300 w-full md:w-auto`}
                         >
                             <FaRobot className="mr-2" />
-                            Create Quiz by
+                            Create Quiz by Ai
                         </button>
                         <button
                             onClick={() => navigate('/app/create-quiz')}

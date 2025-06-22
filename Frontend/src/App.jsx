@@ -11,7 +11,6 @@ const LandingPage = lazy(() => import('./Layout/LangidPage'));
 const Home = lazy(() => import('./Components/Browse Quizzes/Home'));
 const Dashboard = lazy(() => import('./Components/Dashboard/Dashboard'));
 const QuizForm = lazy(() => import('./Components/Quiz/QuizForm'));
-const GeneratedResponse = lazy(() => import('./Components/Quiz/GeneratedResponse'));
 const AIQuizGenerator = lazy(() => import('./Components/Quiz/AIQuizGenerator'));
 const QuizTest = lazy(() => import('./Components/QuizTestPage/QuizTest'));
 const Login = lazy(() => import('./Components/Auth/Login'));
@@ -79,14 +78,7 @@ export default function App() {
               }
             />
 
-            <Route
-              path="quiz-response/:id"
-              element={
-                <ProtectedRoute>
-                  <GeneratedResponse />
-                </ProtectedRoute>
-              }
-            />
+
 
             <Route
               path="generate-quiz"

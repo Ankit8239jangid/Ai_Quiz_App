@@ -18,6 +18,7 @@ const AIQuizGenerator = () => {
 
     // Check if user is authenticated by checking for token
     const isAuthenticated = () => !!localStorage.getItem('token');
+    
 
     const examplePrompts = [
         'Create a quiz about the solar system and planets',
@@ -78,7 +79,7 @@ const AIQuizGenerator = () => {
             }
         } catch (error) {
             console.error('Error generating quiz:', error);
-            toast.error(error.response?.data?.message || 'Failed to generate quiz');
+            toast.error('Rate limit exceeded: free-models-per-day' || 'Failed to generate quiz');
         } finally {
             setLoading(false);
         }
@@ -199,7 +200,7 @@ const AIQuizGenerator = () => {
 
                                 <button
                                     type="submit"
-                                    disabled={loading}
+                                    disabled={loading | prompt.length < 24 }
                                     className={`w-full py-3 px-4 rounded-lg font-medium text-white flex items-center justify-center ${loading ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'} transition-colors duration-300`}
                                 >
                                     {loading ? (

@@ -5,7 +5,7 @@ import { useAppContext } from '../../context/app.context';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { FaPlus, FaTimes, FaSave, FaArrowLeft, FaTrash } from 'react-icons/fa';
-import GeneratedResponse from './GeneratedResponse';
+
 
 const QuizForm = () => {
     const { id } = useParams(); // For editing existing quiz
@@ -14,7 +14,7 @@ const QuizForm = () => {
     const [formData, setFormData] = useState({
         title: '',
         field: '',
-        timeLimit: 10,
+        timeLimit: 3,
         questions: [
             {
                 question: '',
@@ -453,11 +453,7 @@ const QuizForm = () => {
                         ))}
                     </div>
 
-                    {/* Show Generated Response for edit mode */}
-                    {isEditMode && (
-                        <GeneratedResponse />
-                    )}
-
+                    
                     <div className="flex justify-end">
                         <button
                             type="button"

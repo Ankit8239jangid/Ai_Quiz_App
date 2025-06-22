@@ -1,65 +1,65 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import fs from "fs";
+import OpenAI from 'openai';
 
-const ai = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+const openai = new OpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: process.env.API_KEY,
+  defaultHeaders: {
+    'HTTP-Referer': '<YOUR_SITE_URL>',
+    'X-Title': '<YOUR_SITE_NAME>',
+  },
+});
 
-// TEXT RESPONSE
 async function generateTextResponse(prompt, field, numQuestions) {
-  const model = ai.getGenerativeModel({
-    model: "gemini-1.5-pro-latest",
-    systemInstruction: `
-You are a professional quiz generator AI.
+  const systemInstruction = `
+  You are a professional quiz generator AI.
+  
+  Your task is to generate a quiz in strict JSON format based on a given topic, category (field), and number of questions.
+  
+  ### JSON Output Format:
+  {
+    "title": "Short Quiz Title",
+    "timeLimit": Total time in minutes (based on 20 seconds per question),
+    "field": "Category name",
+    "numQuestions": Number of questions,
+    "questions": [
+      {
+        "question": "Your question text?",
+        "options": ["Option A", "Option B", "Option C", "Option D"],
+        "correctAnswer": "Correct option (must match one of the above)"
+      }
+    ]
+  }
+  
+  ### Important Rules:
+  - Only return a valid JSON object. No markdown, no explanation.
+  - Each question must have exactly 4 options and 1 correct answer.
+  - The "timeLimit" should be calculated as:  
+    **timeLimit = ceil(numQuestions * 20 seconds / 60)** (in whole minutes).
+  - Questions should be short, clear, and relevant to the topic.
+  - The title should be 2–3 words and match the topic.
+  
+  Your output should be clean and strictly match the JSON format above.
+  `;
 
-Your job is to generate a quiz based on the provided prompt, field, and number of questions.
-Generate a quiz in strict JSON format.
 
-Here is the required JSON structure:
-{
-  "title": "Quiz Topic",
-  "timeLimit": 5,
-  "field": "Category",
-  "numQuestions": Number of Questions,
-  "questions": [
-    {
-      "question": "Question here?",
-      "options": ["A", "B", "C", "D"],
-      "correctAnswer": "A"
-    },
-    ...
-  ]
-}
 
-Rules:
-- Only return the JSON object (do NOT wrap it in Markdown or explain anything).
-- Each question must have 4 options and one correct answer from them.
-- Keep questions short and relevant to the topic.
--Keep the title short 2 or 3 words and relevant to the topic.
-
-Example input=>
-
-Expected response format:
-{
-  "title": "JavaScript Basics",
-  "timeLimit": 5,
-  "field": "Programming",
-  "numQuestions": 3,
-  "questions": [
-    {
-      "question": "What keyword is used to declare a variable in JavaScript?",
-      "options": ["var", "define", "let", "const"],
-      "correctAnswer": "let"
-    },
-    ...
-  ]
-}
-        `
+  const response = await openai.chat.completions.create({
+    model: 'mistralai/mistral-small-3.2-24b-instruct:free', // You can use any model like `mistralai/mixtral-8x7b`, `meta-llama/llama-3-70b-instruct`, etc.
+    messages: [
+      { role: 'system', content: systemInstruction },
+      {
+        role: 'user',
+        content: `${prompt} in the field of ${field} with ${numQuestions} number of questions`,
+      },
+    ],
   });
 
-  const result = await model.generateContent(`${prompt} in the field of ${field} with ${numQuestions} number of questions`);
-  const response = await result.response;
-  const text = response.text();
-
-  return text;
+  const message = response.choices[0].message.content;
+  return message;
 }
 
-export { generateTextResponse, };
+export { generateTextResponse };
+
+
+
+
