@@ -12,6 +12,7 @@ const AIQuizGenerator = () => {
     const [numQuestions, setNumQuestions] = useState(5);
     const [loading, setLoading] = useState(false);
     const [generatedQuiz, setGeneratedQuiz] = useState(null);
+    const [error, setError] = useState(false);
 
     const { theme, commonFields } = useAppContext();
     const navigate = useNavigate();
@@ -75,11 +76,18 @@ const AIQuizGenerator = () => {
                 setGeneratedQuiz(quiz);
                 toast.success('Quiz generated successfully!');
             } else {
-                toast.error('Failed to generate quiz');
+                toast.error(' API free limit over 😥');
+                setError(true)
             }
         } catch (error) {
             console.error('Error generating quiz:', error);
+<<<<<<< HEAD
             toast.error('Rate limit exceeded: free-models-per-day' || 'Failed to generate quiz');
+=======
+            setError(true)
+            // toast.error(error.response?.data?.message || 'Failed to generate quiz');
+             toast.error(' API free limit over 😥');
+>>>>>>> 2cf62c15a70357d3dbfaf8b2bb49558e1a2b6546
         } finally {
             setLoading(false);
         }
@@ -109,6 +117,12 @@ const AIQuizGenerator = () => {
     const handleExamplePrompt = (examplePrompt) => {
         setPrompt(examplePrompt);
     };
+
+    if(error){
+        <h3 className={`text-lg font-medium mb-3 flex items-center ${theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}`}>
+                             Api free creation limit over please contact to developer 😥!
+    </h3>
+    }
 
     return (
         <div className={`min-h-screen p-6 ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-800'}`}>
